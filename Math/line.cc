@@ -22,13 +22,9 @@ Line & Line::operator=(const Line & line) {
 // Note: Check than A and B are not too close!
 
 void Line::setFromAtoB(const Vector3 & A, const Vector3 & B) {
-	this.m_O[0] = A->m_v[0];
-	this.m_O[1] = A->m_v[1];
-	this.m_O[2] = A->m_v[2];
+	this->m_O = A;
 
-	this.m_d[0] = B->m_v[0] - A->m_v[0];
-	this.m_d[1] = B->m_v[1] - A->m_v[1];
-	this.m_d[2] = B->m_v[2] - A->m_v[2];
+	this->m_d = A - B;
 }
 
 // @@ TODO: Give the point corresponding to parameter u

@@ -2,7 +2,12 @@
 #include <algorithm>
 #include <cstdio>
 #include <cmath>
-#include <GL/glut.h>
+#ifdef __APPLE__
+    #include <GLUT/glut.h>
+    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#else
+    #include <GL/glut.h>
+#endif
 #include "tools.h"
 #include "trfm3D.h"
 

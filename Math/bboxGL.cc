@@ -1,7 +1,12 @@
 #include "bboxGL.h"
 
 #include <GL/glew.h>
-#include <GL/glut.h>
+#ifdef __APPLE__
+    #include <GLUT/glut.h>
+    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#else
+    #include <GL/glut.h>
+#endif
 #include "renderState.h" // For rendering state
 #include "materialManager.h"
 

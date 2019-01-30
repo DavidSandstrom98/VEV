@@ -3,7 +3,12 @@
 #pragma once
 
 #include <GL/glew.h>
-#include <GL/glut.h>
+#ifdef __APPLE__
+    #include <GLUT/glut.h>
+    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#else
+    #include <GL/glut.h>
+#endif
 #include <stdio.h>
 #include "vector3.h"
 #include "trfm3D.h"

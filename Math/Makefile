@@ -10,7 +10,7 @@ SRC = vector3.cc trfm3D.cc plane.cc line.cc bbox.cc intersect.cc bsphere.cc ../M
 # Don't change anything below
 DEBUG = 1
 LIBDIR = -L/usr/lib/nvidia-367/ -L/usr/lib/nvidia-375/
-LIBS = -lm -lglut -lGLU -lGL -lGLEW
+LIBS = -lm -framework GLUT -framework OpenGL -lGLEW
 INCLUDE_DIR = -I../Misc
 ifdef DEBUG
 OPTFLAGS = -g
@@ -28,7 +28,7 @@ all: $(EXEC)
 	g++ -c -o $@ $(CCOPTIONS) $(INCLUDE_DIR) $< 
 
 $(EXEC): $(JPEG_LIB) $(TARGET) $(MEMBERS) $(SOURCEMAIN)
-	g++ $(CCOPTIONS) -o $(EXEC) $(SOURCEMAIN) $(MEMBERS) $(INCLUDE_DIR) $(LIBDIR) $(LIBS)
+	g++ $(CCOPTIONS) -o $(EXEC) $(SOURCEMAIN) $(MEMBERS) $(INCLUDE_DIR) $(LIBS)
 
 
 $(JPEG_LIB):
