@@ -33,7 +33,6 @@ class Line {
 	void setFromAtoB(const Vector3 & A, const Vector3 & B);
 
 	//! Give the point corresponding to parameter u
-
 	Vector3 at(float u) const;
 
 	//! Minimum distance between line and a point
