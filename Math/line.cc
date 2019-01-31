@@ -25,12 +25,12 @@ Line & Line::operator=(const Line & line) {
 
 void Line::setFromAtoB(const Vector3 & A, const Vector3 & B) {
 	Vector3 res =  Vector3(A - B);
-	if(res.length() < Vector3::epsilon){
+	if(res.isZero()){
 		this->m_O = A;
 		res.normalize();
 		this->m_d = res;
 	}else{
-		std::cout<<"Numeros equivocados";
+		std::cout<<"Puntos demasiado proximos";
 	}
 	
 }
