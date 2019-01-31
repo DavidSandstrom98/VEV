@@ -1,6 +1,8 @@
 #include <cassert>
 #include <cstdio>
 #include <cstdlib>
+#include <iostream>
+
 #include "line.h"
 #include "constants.h"
 #include "tools.h"
@@ -22,15 +24,21 @@ Line & Line::operator=(const Line & line) {
 // Note: Check than A and B are not too close!
 
 void Line::setFromAtoB(const Vector3 & A, const Vector3 & B) {
-	this->m_O = A;
-
-	this->m_d = A - B;
+	Vector3 res =  Vector3(A - B);
+	if(res.length() < Vector3::epsilon){
+		this->m_O = A;
+		res.normalize();
+		this->m_d = res;
+	}else{
+		std::cout<<"Numeros equivocados";
+	}
+	
 }
 
 // @@ TODO: Give the point corresponding to parameter u
 Vector3 Line::at(float u) const {
-	Vector3 res;
-	
+	Vector3 res = this->m_O;
+	res = res + u * this->m_d;
 	return res;
 }
 
@@ -40,7 +48,8 @@ Vector3 Line::at(float u) const {
 
 float Line::paramDistance(const Vector3 & P) const {
 	float res = 0.0f;
-
+	res = this->m_d * (P - this->m_O);
+	res = res / (this->m_d * this->m_d);
 	return res;
 }
 
