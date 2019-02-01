@@ -18,7 +18,13 @@
 //    IREJECT don't intersect
 
 int  BBoxBBoxIntersect(const BBox *bba, const BBox *bbb ) {
-
+	if( (bba->m_min.x() > bbb->m_max.x() || bbb->m_min.x() > bba->m_max.y()) || 
+		(bba->m_min.y() > bbb->m_max.y() || bbb->m_min.y() > bba->m_max.y()) || 
+		(bba->m_min.z() > bbb->m_max.z() || bbb->m_min.z() > bba->m_max.z())){
+		return IREJECT;
+	}else{
+		return IINTERSECT;
+	}
 }
 
 // @@ TODO: test if a BBox and a plane intersect.
