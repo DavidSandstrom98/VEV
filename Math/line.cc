@@ -22,45 +22,47 @@ Line & Line::operator=(const Line & line) {
 // @@ TODO: Set line to pass through two points A and B
 //
 // Note: Check than A and B are not too close!
-
 void Line::setFromAtoB(const Vector3 & A, const Vector3 & B) {
-	Vector3 res =  Vector3(A - B);
+	Vector3 res =  Vector3(B - A);
 	if(res.isZero()){
+		std::cout<<"Puntos demasiado proximos";
+	}else{
 		this->m_O = A;
 		res.normalize();
 		this->m_d = res;
-	}else{
-		std::cout<<"Puntos demasiado proximos";
 	}
 	
 }
 
 // @@ TODO: Give the point corresponding to parameter u
 Vector3 Line::at(float u) const {
-	Vector3 res = this->m_O;
-	res = res + u * this->m_d;
+	Vector3 res = this->m_O + u * this->m_d;
 	return res;
 }
 
 // @@ TODO: Calculate the parameter 'u0' of the line point nearest to P
 //
 // u0 = D*(P-O) / D*D , where * == dot product
-
+//(Punto proyectado sobre la linea - origen)/vector de direccion
 float Line::paramDistance(const Vector3 & P) const {
-	float res = 0.0f;
-	res = this->m_d * (P - this->m_O);
-	res = res / (this->m_d * this->m_d);
-	return res;
+	float num = this->m_d.dot(P - this->m_O;
+	float den = this->m_d.dot(this->m_d);
+
+	if(den > Vector3::epsilon){
+		return num/den;
+	}else{
+		std::cout<<"CUIDADO: El denominador ha resultado ser 0";
+		return 0;
+	}
+
 }
 
 // @@ TODO: Calculate the minimum distance 'dist' from line to P
 //
 // dist = ||P - (O + uD)||
 // Where u = paramDistance(P)
-
 float Line::distance(const Vector3 & P) const {
-	float res = 0.0f;
-
+	float res = (P - (this->m_O + this.paramDistance(P) * this->m_v)).length();
 	return res;
 }
 
