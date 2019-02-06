@@ -45,7 +45,7 @@ Vector3 Line::at(float u) const {
 // u0 = D*(P-O) / D*D , where * == dot product
 //(Punto proyectado sobre la linea - origen)/vector de direccion
 float Line::paramDistance(const Vector3 & P) const {
-	float num = this->m_d.dot(P - this->m_O;
+	float num = this->m_d.dot(P - this->m_O);
 	float den = this->m_d.dot(this->m_d);
 
 	if(den > Vector3::epsilon){
@@ -62,7 +62,7 @@ float Line::paramDistance(const Vector3 & P) const {
 // dist = ||P - (O + uD)||
 // Where u = paramDistance(P)
 float Line::distance(const Vector3 & P) const {
-	float res = (P - (this->m_O + this.paramDistance(P) * this->m_v)).length();
+	float res = (P - (this->m_O + this->paramDistance(P) * this->m_d)).length();
 	return res;
 }
 

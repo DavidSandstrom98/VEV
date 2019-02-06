@@ -34,7 +34,7 @@ int  BBoxBBoxIntersect(const BBox *bba, const BBox *bbb ) {
 //    IINTERSECT intersect
 
 int  BBoxPlaneIntersect (const BBox *theBBox, Plane *thePlane) {
-
+	return IINTERSECT;
 }
 
 
@@ -46,7 +46,7 @@ int  BBoxPlaneIntersect (const BBox *theBBox, Plane *thePlane) {
 int BSphereBSphereIntersect(const BSphere *bsa, const BSphere *bsb)
 {
 	Vector3 dist(bsa->m_centre - bsb->m_centre);
-	if(dist.lengthSquare() <= pow(bsa->m_radius + bsb->m_radius), 2)){
+	if(dist.lengthSquare() <= pow(bsa->m_radius + bsb->m_radius, 2.0)){
 		return IINTERSECT;
 	}else{
 		return IREJECT;
@@ -60,7 +60,7 @@ int BSphereBSphereIntersect(const BSphere *bsa, const BSphere *bsb)
 //    IINTERSECT intersect
 //Comprobar si la distancia del centro al plano es menor que el radio
 int BSpherePlaneIntersect(const BSphere *bs, Plane *pl) {
-	float dist = pl.distance(bs->m_centre);
+	float dist = pl->distance(bs->m_centre);
 	if(dist > bs->m_radius){
 		return IREJECT;
 	}else{
@@ -75,6 +75,25 @@ int BSpherePlaneIntersect(const BSphere *bs, Plane *pl) {
 
 int BSphereBBoxIntersect(const BSphere *sphere, const BBox *box) {
 
+	if(box->m_min.x() >= sphere->m_centre.x() &&  box->m_max.x() <= sphere->m_centre.x() && 
+	   box->m_min.y() >= sphere->m_centre.y() &&  box->m_max.y() <= sphere->m_centre.y() && 
+	   box->m_min.z() >= sphere->m_centre.z() &&  box->m_max.z() <= sphere->m_centre.z()){
+		   return IINTERSECT;
+	}else{
+		Vector3 *vertices[8];
+		vertices[0] = new Vector3(box->min.x(), box->min.y(), box->min.z()); 
+		vertices[1] = new Vector3(box->min.x(), box->min.y(), box->max.z()); 
+		vertices[2] = new Vector3(box->min.x(), box->max.y(), box->min.z()); 
+		vertices[3] = new Vector3(box->min.x(), box->max.y(), box->max.z()); 
+		vertices[4] = new Vector3(box->max.x(), box->min.y(), box->min.z()); 
+		vertices[5] = new Vector3(box->min.x(), box->min.y(), box->max.z()); 
+		vertices[6] = new Vector3(box->min.x(), box->max.y(), box->min.z()); 
+		vertices[7] = new Vector3(box->min.x(), box->max.y(), box->max.z()); 
+
+		
+	}
+	return IREJECT;
+	
 }
 
 
