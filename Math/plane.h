@@ -14,7 +14,7 @@
   N*X = d
 
 */
-
+//EL plano se define en la forma ax + by + cz = d
 class Plane {
 
 public:

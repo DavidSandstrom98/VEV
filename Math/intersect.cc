@@ -16,7 +16,7 @@
 //! Returns :
 //    IINTERSECT intersect
 //    IREJECT don't intersect
-
+//Si se cumple alguno de los intervalos del teorema intersectan
 int  BBoxBBoxIntersect(const BBox *bba, const BBox *bbb ) {
 	if( (bba->m_min.x() > bbb->m_max.x() || bbb->m_min.x() > bba->m_max.y()) || 
 		(bba->m_min.y() > bbb->m_max.y() || bbb->m_min.y() > bba->m_max.y()) || 
@@ -42,9 +42,15 @@ int  BBoxPlaneIntersect (const BBox *theBBox, Plane *thePlane) {
 //! Returns :
 //    IREJECT don't intersect
 //    IINTERSECT intersect
-
-int BSphereBSphereIntersect(const BSphere *bsa, const BSphere *bsb ) {
-
+//Comprobar si la distancia entre centros es menor que la suma de los radios.
+int BSphereBSphereIntersect(const BSphere *bsa, const BSphere *bsb)
+{
+	Vector3 dist(bsa->m_centre - bsb->m_centre);
+	if(dist.lengthSquare() <= pow(bsa->m_radius + bsb->m_radius), 2)){
+		return IINTERSECT;
+	}else{
+		return IREJECT;
+	}
 }
 
 // @@ TODO: test if a BSpheres intersects a plane.
@@ -52,9 +58,14 @@ int BSphereBSphereIntersect(const BSphere *bsa, const BSphere *bsb ) {
 //   +IREJECT outside
 //   -IREJECT inside
 //    IINTERSECT intersect
-
+//Comprobar si la distancia del centro al plano es menor que el radio
 int BSpherePlaneIntersect(const BSphere *bs, Plane *pl) {
-
+	float dist = pl.distance(bs->m_centre);
+	if(dist > bs->m_radius){
+		return IREJECT;
+	}else{
+		return IINTERSECT;
+	}
 }
 
 // @@ TODO: test if a BSpheres intersect a BBox.
