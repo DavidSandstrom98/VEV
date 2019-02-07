@@ -34,7 +34,35 @@ int  BBoxBBoxIntersect(const BBox *bba, const BBox *bbb ) {
 //    IINTERSECT intersect
 
 int  BBoxPlaneIntersect (const BBox *theBBox, Plane *thePlane) {
-	return IINTERSECT;
+	Vector3 uno, dos;
+	if(thePlane->m_d.x() < 0){
+		uno.x = theBBox.m_max.x();
+		dos.x = theBBox.m_min.x();
+	}else{
+		uno.x = theBBox.m_min.x();
+		dos.x = theBBox.m_max.x();
+	}
+
+	if(thePlane->m_d.y() < 0){
+		uno.y = theBBox.m_max.y();
+		dos.y = theBBox.m_min.y();
+	}else{
+		uno.y = theBBox.m_min.y();
+		dos.y = theBBox.m_max.y();
+	}
+
+	if(thePlane->m_d.z() < 0){
+		uno.z = theBBox.m_max.z();
+		dos.z = theBBox.m_min.z();
+	}else{
+		uno.z = theBBox.m_min.z();
+		dos.z = theBBox.m_max.z();
+	}
+
+	if(thePlane.whichSide(uno) == 0 || thePlane.whichSide(dos) == 0 || thePlane.whichSide(uno) != thePlane.whichSide(uno)){
+		return IINTERSECT
+	}
+	return IREJECT;
 }
 
 
