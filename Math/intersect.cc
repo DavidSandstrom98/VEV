@@ -121,18 +121,26 @@ int BSphereBBoxIntersect(const BSphere *sphere, const BBox *box) {
 	   box->m_min.y() >= sphere->m_centre.y() &&  box->m_max.y() <= sphere->m_centre.y() && 
 	   box->m_min.z() >= sphere->m_centre.z() &&  box->m_max.z() <= sphere->m_centre.z()){
 		   return IINTERSECT;
-	}else{
-		/*Vector3 *vertices[8];
-		vertices[0] = new Vector3(box->m_min.x(), box->m_min.y(), box->m_min.z()); 
-		vertices[1] = new Vector3(box->m_min.x(), box->m_min.y(), box->m_max.z()); 
-		vertices[2] = new Vector3(box->m_min.x(), box->m_max.y(), box->m_min.z()); 
-		vertices[3] = new Vector3(box->m_min.x(), box->m_max.y(), box->m_max.z()); 
-		vertices[4] = new Vector3(box->m_max.x(), box->m_min.y(), box->m_min.z()); 
-		vertices[5] = new Vector3(box->m_max.x(), box->m_min.y(), box->m_max.z()); 
-		vertices[6] = new Vector3(box->m_max.x(), box->m_max.y(), box->m_min.z()); 
-		vertices[7] = new Vector3(box->m_max.x(), box->m_max.y(), box->m_max.z());*/ 
+	}else{	
+		float distance = 0.0;
 
+		if(sphere->m_centre.x() < box->m_min.x()){
+			distance = distance + pow(sphere->m_centre.x() - box->m_min.x(), 2); 
+		}else if(sphere->m_centre.x() > box->m_max.x()) {
+			distance = distance + pow(sphere->m_centre.x() - box->m_max.x(), 2); 
+		}
+		if(sphere->m_centre.y() < box->m_min.y()){
+			distance = distance + pow(sphere->m_centre.y() - box->m_min.y(), 2); 
+		}else if(sphere->m_centre.y() > box->m_max.y()) {
+			distance = distance + pow(sphere->m_c.y() - box->m_max.y(), 2); 
+		}
+		if(sphere->m_centre.z() < box->m_min.z()){
+			distance = distance + pow(sphere->m_centre.z() - box->m_min.z(), 2); 
+		}else if(sphere->m_centre.z() > box->m_max.z()) {
+			distance = distance + pow(sphere->m_centre.z() - box->m_max.z(), 2); 
+		}
 		
+		if(distance <= box->m_radius * box->m_radius) return IINTERSECT;
 	}
 	return IREJECT;
 	
