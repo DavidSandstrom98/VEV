@@ -132,7 +132,7 @@ int BSphereBBoxIntersect(const BSphere *sphere, const BBox *box) {
 		if(sphere->m_centre.y() < box->m_min.y()){
 			distance = distance + pow(sphere->m_centre.y() - box->m_min.y(), 2); 
 		}else if(sphere->m_centre.y() > box->m_max.y()) {
-			distance = distance + pow(sphere->m_c.y() - box->m_max.y(), 2); 
+			distance = distance + pow(sphere->m_centre.y() - box->m_max.y(), 2); 
 		}
 		if(sphere->m_centre.z() < box->m_min.z()){
 			distance = distance + pow(sphere->m_centre.z() - box->m_min.z(), 2); 
@@ -140,7 +140,7 @@ int BSphereBBoxIntersect(const BSphere *sphere, const BBox *box) {
 			distance = distance + pow(sphere->m_centre.z() - box->m_max.z(), 2); 
 		}
 		
-		if(distance <= box->m_radius * box->m_radius) return IINTERSECT;
+		if(distance <= sphere->m_radius * sphere->m_radius) return IINTERSECT;
 	}
 	return IREJECT;
 	
