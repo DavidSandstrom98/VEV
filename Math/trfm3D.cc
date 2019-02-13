@@ -2,12 +2,9 @@
 #include <algorithm>
 #include <cstdio>
 #include <cmath>
-#ifdef __APPLE__
-    #include <GLUT/glut.h>
-    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#else
-    #include <GL/glut.h>
-#endif
+
+#include <GL/glut.h>
+
 #include "tools.h"
 #include "trfm3D.h"
 
@@ -198,18 +195,23 @@ void Trfm3D::clone( const Trfm3D *T ) {	clone(*T); }
 
 // @@ TODO. Transform a point
 
-Vector3 Trfm3D::transformPoint(const Vector3 & P) const {
-	Vector3 res;
+Vector3 Trfm3D::transformPoint(const Vector3 &P) const {
+
+	Vector3 res(this->m_c1.x() * P.x() * this->m_scl + this->m_c2.x() * P.y() * this->m_scl + this->m_c3.x() * P.z() * this->m_scl + this->m_tr.x() ,
+				this->m_c1.y() * P.x() * this->m_scl + this->m_c2.y() * P.y() * this->m_scl + this->m_c3.y() * P.z() * this->m_scl + this->m_tr.y(),
+				this->m_c1.z() * P.x() * this->m_scl + this->m_c2.z() * P.y() * this->m_scl + this->m_c3.z() * P.z() * this->m_scl + this->m_tr.z() );
 
 	return res;
 }
 
-// @@ TODO. Transform a vector.
+// @@ TODO. Transform a vector.* this.m_scl
 //
 // Remember: Vectors don't translate
 
-Vector3 Trfm3D::transformVector(const Vector3 & V) const {
-	Vector3 res;
+Vector3 Trfm3D::transformVector(const Vector3 &V) const{
+	Vector3 res(this->m_c1.x() * V.x() * this->m_scl + this->m_c2.x() * V.y() * this->m_scl + this->m_c3.x() * V.z() * this->m_scl,
+				this->m_c1.y() * V.x() * this->m_scl + this->m_c2.y() * V.y() * this->m_scl + this->m_c3.y() * V.z() * this->m_scl,
+				this->m_c1.z() * V.x() * this->m_scl + this->m_c2.z() * V.y() * this->m_scl + this->m_c3.z() * V.z() * this->m_scl);
 
 	return res;
 }

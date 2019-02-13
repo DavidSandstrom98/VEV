@@ -203,6 +203,6 @@ private:
 	Vector3 m_c1, m_c2, m_c3;
 	Vector3 m_tr;
 	Vector3 m_d;
-	float m_scl;
+	float m_scl; // el escalado se guarda de forma uniforme
 	float  m_w;
 };
