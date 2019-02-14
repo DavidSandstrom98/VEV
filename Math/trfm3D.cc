@@ -350,6 +350,22 @@ void Trfm3D::setRotZ(float angle ) {
 */
 
 void Trfm3D::setRotVec(const Vector3 & VV, float theta ) {
+	Vector3 V = VV;
+	V.normalize();
+	float c = cos(theta);
+	float s = sin(theta);
+	float t = 1 - c;
+	float x = V.x();
+	float y = V.y();
+	float z = V.z();
+
+	this->m_c1 = Vector3( t*x*x + c,   t*x*y + z*s, t*x*z - y*s);
+	this->m_c2 = Vector3( t*x*y - z*s, t*y*y + c,   t*y*z + x*s);
+	this->m_c3 = Vector3( t*x*z + y*s, t*y*z - x*s, t*z*z + c  );
+	this->m_scl = 1.0f;
+	this->m_tr = Vector3::ZERO;
+	this->m_d = Vector3::ZERO;
+	this->m_w  = 1.0f;
 }
 
 
@@ -377,6 +393,11 @@ void Trfm3D::setScale(float scale ) {
 //
 
 void Trfm3D::setRotAxis(const Vector3 & V, const Vector3 & P, float angle ) {
+	Vector3 opuesto = Vector3::ZERO - P;
+	
+	this->addTrans(P);
+	this->addRotVec(V, angle);
+	this->addTrans(opuesto);
 }
 
 
@@ -513,8 +534,7 @@ void Trfm3D::addRotZ(float angle ) {
 	add(localT);
 }
 
-void Trfm3D::addRotVec(const Vector3 & V,
-					   float theta ) {
+void Trfm3D::addRotVec(const Vector3 & V, float theta ) {
 	static Trfm3D localT;
 	localT.setRotVec(V, theta);
 	add(localT);
@@ -522,10 +542,10 @@ void Trfm3D::addRotVec(const Vector3 & V,
 
 // @@TODO: add a "RotAxis" transformation to the current trfm
 
-void Trfm3D::addRotAxis(const Vector3 & V,
-						const Vector3 & P,
-						float angle) {
+void Trfm3D::addRotAxis(const Vector3 & V, const Vector3 & P, float angle) {
 	static Trfm3D localT;
+	localT.setRotAxis(V, P, angle);
+	this->add(localT);
 }
 
 void Trfm3D::addTrans(const Vector3 & T) {
