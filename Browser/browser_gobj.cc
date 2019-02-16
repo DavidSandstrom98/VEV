@@ -138,7 +138,8 @@ static void Keyboard (unsigned char key, int x, int y) {
 			glDisable(GL_CULL_FACE);
 			break;
 		case 'a':
-			T->addRotY(-angle_step);
+			//T->addRotY(-angle_step);
+			T->addRotAxis(Vector3(0.0f, 1.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), -angle_step);
 			break;
 		case 'd':
 			T->addRotY(angle_step);
@@ -174,8 +175,29 @@ void create_scene_tmesh() {
 	mesh->addPoint(Vector3(0.25, -0.25, -0.25)); // P2
 	mesh->addPoint(Vector3(0.25,  0.25, -0.25)); // P3
 
-	mesh->addTriangle(0, 1, 2);    // P0 - P1 - P2
+	mesh->addPoint(Vector3(-0.25,  0.25, 0.25)); // P4
+	mesh->addPoint(Vector3(-0.25, -0.25, 0.25)); // P5
+	mesh->addPoint(Vector3(0.25, -0.25, 0.25)); // P6
+	mesh->addPoint(Vector3(0.25,  0.25, 0.25)); // P7
+
+	//Front
+	mesh->addTriangle(0, 1, 2); // P0 - P1 - P2
 	mesh->addTriangle(2, 3, 0); // P2 - P3 - P0
+	//Back
+	mesh->addTriangle(7, 6, 4); // P7 - P6 - P4
+	mesh->addTriangle(6, 5, 4); // P6 - P5 - P4
+	//Top
+	mesh->addTriangle(4, 0, 3); // P4 - P0 - P3
+	mesh->addTriangle(3, 7, 4); // P3 - P7 - P4
+	//Bottom
+	mesh->addTriangle(1, 5, 6); // P1 - P5 - P6
+	mesh->addTriangle(6, 2, 1); // P6 - P2 - P1
+	//Right
+	mesh->addTriangle(6, 7, 3); // P6 - P7 - P3
+	mesh->addTriangle(3, 2, 6); // P3 - P2 - P6
+	//Left
+	mesh->addTriangle(0, 4, 5); // P0 - P4 - P5
+	mesh->addTriangle(5, 1, 0); // P5 - P1 - P0
 
 	gObj = GObjectManager::instance()->create("MG_GOBJ");
 	gObj->add(mesh);

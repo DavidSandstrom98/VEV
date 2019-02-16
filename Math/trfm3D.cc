@@ -352,8 +352,8 @@ void Trfm3D::setRotZ(float angle ) {
 void Trfm3D::setRotVec(const Vector3 & VV, float theta ) {
 	Vector3 V = VV;
 	V.normalize();
-	float c = cos(theta);
-	float s = sin(theta);
+	float c = cosf(theta);
+	float s = sinf(theta);
 	float t = 1 - c;
 	float x = V.x();
 	float y = V.y();
@@ -395,7 +395,7 @@ void Trfm3D::setScale(float scale ) {
 void Trfm3D::setRotAxis(const Vector3 & V, const Vector3 & P, float angle ) {
 	Vector3 opuesto = Vector3::ZERO - P;
 	
-	this->addTrans(P);
+	this->setTrans(P);
 	this->addRotVec(V, angle);
 	this->addTrans(opuesto);
 }
