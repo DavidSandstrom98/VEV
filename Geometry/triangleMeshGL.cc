@@ -71,7 +71,7 @@ void TriangleMeshGL::init_opengl_vbo(TriangleMesh * thisMesh) {
 				 GL_STATIC_DRAW);
 	// Attribute specification
 	// 0-11 (vertex-position) 12-23 (normal) 24-31 (texture coord) 32-43 (TBN tangent)
-	// 44-55 (TBN bitangent) 56-67 (TBN normal)
+	// 44-55 (TBN bitangent) 
 	glEnableVertexAttribArray(0); // 0 attrib. for vertex position (3 x 4 = 12)
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vbo_vertex), VBO_BUFFER_OFFSET(0));
 	glEnableVertexAttribArray(1); // 1 attrib. for vertex normal (3 x 4 = 12)

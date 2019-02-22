@@ -262,14 +262,17 @@ Node * Node::cycleChild(size_t idx) {
 //
 // Add a child to node
 // Print a warning (and do nothing) if node already has an gObject.
-
 void Node::addChild(Node *theChild) {
 
-	if (theChild == 0) return;
-	if (m_gObject) {
+	if (theChild == 0)
+		return;
+	if (m_gObject){
 		// node has a gObject, so print warning
-	} else {
+		printf("OJOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n");
+	}else{
 		// node does not have gObject, so attach child
+		theChild->m_parent = this;
+		this->m_children.push_back(theChild);
 	}
 }
 
@@ -377,6 +380,20 @@ void Node::draw() {
 	// Print BBoxes
 	if(rs->getBBoxDraw() || m_drawBBox)
 		BBoxGL::draw( m_containerWC );
+	
+	rs->push(RenderState::modelview);
+	rs->addTrfm(RenderState::modelview, this->m_placement);
+	
+	if(this->m_gObject != 0){
+		this->m_gObject->draw();
+	}else{
+		for (list<Node *>::const_iterator it = m_children.begin(), end = m_children.end();
+			 it != end; ++it) {
+			Node *theChild = *it;
+			theChild->draw();
+		}	
+	}
+	rs->pop(RenderState::modelview);
 }
 
 // Set culled state of a node's children

@@ -284,12 +284,15 @@ static void Keyboard_alt(unsigned char key) {
 			check_cull = 1 - check_cull;
 			break;
 		case '1':
+			printf("aaa1\n");
 			displayNode = displayNode->parent();
 			break;
 		case '2':
+		printf("aaa2\n");
 			displayNode = displayNode->firstChild();
 			break;
 		case '3':
+		printf("aaa3\n");
 			displayNode = displayNode->nextSibling();
 			break;
 		case '4':
@@ -495,7 +498,8 @@ void animate(int value) {
 int main(int argc, char** argv) {
 
 	srand(time(0));
-	InitRenderContext(argc, argv, 900, 700, 100, 0);
+	//InitRenderContext(argc, argv, 900, 700, 100, 0);
+	InitRenderContext(argc, argv, 1800, 1400, 100, 0);
 	// set GLUT callback functions
 	glutDisplayFunc( Display );
 	glutKeyboardFunc( Keyboard );
@@ -510,7 +514,8 @@ int main(int argc, char** argv) {
 		displayNode = parse_scene(argv[1]);
 	} else {
 		// regular scene
-		InitCamera(900, 700);
+		InitCamera(1800, 1400);
+		//InitCamera(900, 700);
 		InitAvatar();
 		InitLight();
 		InitShaders();
@@ -518,7 +523,7 @@ int main(int argc, char** argv) {
 		displayNode = create_scene();
 		// Other possible scenes:
 		//
-		// displayNode = create_scene_city();
+		//displayNode = create_scene_city();
 	}
 
 	Scene::instance()->attach(displayNode);
