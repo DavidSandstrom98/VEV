@@ -284,15 +284,15 @@ static void Keyboard_alt(unsigned char key) {
 			check_cull = 1 - check_cull;
 			break;
 		case '1':
-			printf("aaa1\n");
+			printf("alt-1\n");
 			displayNode = displayNode->parent();
 			break;
 		case '2':
-		printf("aaa2\n");
+		printf("alt-2\n");
 			displayNode = displayNode->firstChild();
 			break;
 		case '3':
-		printf("aaa3\n");
+		printf("alt-3\n");
 			displayNode = displayNode->nextSibling();
 			break;
 		case '4':

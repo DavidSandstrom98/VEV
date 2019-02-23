@@ -268,11 +268,12 @@ void Node::addChild(Node *theChild) {
 		return;
 	if (m_gObject){
 		// node has a gObject, so print warning
-		printf("OJOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n");
+		printf("Estas intentando insertar un nodo en un nodo Hoja.\n");
 	}else{
 		// node does not have gObject, so attach child
 		theChild->m_parent = this;
 		this->m_children.push_back(theChild);
+		theChild->updateGS();
 	}
 }
 
@@ -298,6 +299,12 @@ void Node::detach() {
 //    - placementWC of node and parents are up-to-date
 
 void Node::propagateBBRoot() {
+	if(this->m_parent == 0){
+		return;
+	}else{
+		this->updateBB();
+		this->m_parent->propagateBBRoot();
+	}
 }
 
 // @@ TODO: auxiliary function
@@ -325,7 +332,15 @@ void Node::propagateBBRoot() {
 // Note:
 //    See Recipe 1 in for knowing how to iterate through children.
 
-void Node::updateBB () {
+void Node::updateBB(){
+	if (this->m_gObject != 0){
+		this->m_containerWC->transform(this->m_placementWC);
+	}else{
+		for (list<Node *>::const_iterator it = m_children.begin(), end = m_children.end(); it != end; ++it){
+			Node *theChild = *it;
+			this->m_containerWC->include(theChild->m_containerWC);
+		}
+	}
 }
 
 // @@ TODO: Update WC (world coordinates matrix) of a node and
@@ -344,6 +359,17 @@ void Node::updateBB () {
 //    See Recipe 1 in for knowing how to iterate through children.
 
 void Node::updateWC() {
+	if(this->m_parent == 0){
+		this->m_placementWC->clone(this->m_placement);
+	}else{
+		this->m_placementWC->clone(this->m_parent->m_placementWC);
+		this->m_placementWC->add(this->m_placement);
+	}
+	for (list<Node *>::const_iterator it = m_children.begin(), end = m_children.end(); it != end; ++it) {
+			Node *theChild = *it;
+			theChild->updateWC();
+	}
+	this->updateBB();	
 }
 
 // @@ TODO:
@@ -355,7 +381,8 @@ void Node::updateWC() {
 // - Propagate Bounding Box to root (propagateBBRoot), starting from the parent, if parent exists.
 
 void Node::updateGS() {
-
+	this->updateWC();
+	this->propagateBBRoot();
 }
 
 
@@ -380,20 +407,33 @@ void Node::draw() {
 	// Print BBoxes
 	if(rs->getBBoxDraw() || m_drawBBox)
 		BBoxGL::draw( m_containerWC );
-	
+		
+	//Version en modo global
+	if(this->m_gObject != 0){
+		rs->push(RenderState::modelview);
+		rs->addTrfm(RenderState::modelview, this->m_placementWC);
+		this->m_gObject->draw();
+		rs->pop(RenderState::modelview);
+	}else{
+		for (list<Node *>::const_iterator it = m_children.begin(), end = m_children.end(); it != end; ++it) {
+			Node *theChild = *it;
+			theChild->draw();
+		}	
+	}
+	/*Version en modo local
 	rs->push(RenderState::modelview);
 	rs->addTrfm(RenderState::modelview, this->m_placement);
 	
 	if(this->m_gObject != 0){
 		this->m_gObject->draw();
 	}else{
-		for (list<Node *>::const_iterator it = m_children.begin(), end = m_children.end();
-			 it != end; ++it) {
+		for (list<Node *>::const_iterator it = m_children.begin(), end = m_children.end(); it != end; ++it) {
 			Node *theChild = *it;
 			theChild->draw();
 		}	
 	}
 	rs->pop(RenderState::modelview);
+	*/
 }
 
 // Set culled state of a node's children
