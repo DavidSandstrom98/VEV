@@ -198,7 +198,7 @@ void Trfm3D::clone( const Trfm3D *T ) {	clone(*T); }
 Vector3 Trfm3D::transformPoint(const Vector3 &P) const {
 
 	Vector3 res(this->m_c1.x() * P.x() * this->m_scl + this->m_c2.x() * P.y() * this->m_scl + this->m_c3.x() * P.z() * this->m_scl + this->m_tr.x() ,
-				this->m_c1.y() * P.x() * this->m_scl + this->m_c2.y() * P.y() * this->m_scl + this->m_c3.y() * P.z() * this->m_scl + this->m_tr.y(),
+				this->m_c1.y() * P.x() * this->m_scl + this->m_c2.y() * P.y() * this->m_scl + this->m_c3.y() * P.z() * this->m_scl + this->m_tr.y() ,
 				this->m_c1.z() * P.x() * this->m_scl + this->m_c2.z() * P.y() * this->m_scl + this->m_c3.z() * P.z() * this->m_scl + this->m_tr.z() );
 
 	return res;

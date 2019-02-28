@@ -25,13 +25,13 @@ Line & Line::operator=(const Line & line) {
 void Line::setFromAtoB(const Vector3 & A, const Vector3 & B) {
 	Vector3 res =  Vector3(B - A);
 	if(res.isZero()){
-		std::cout<<"Puntos demasiado proximos";
+		std::cout<<"Puntos demasiado proximos. Se incluye el vector nulo.\n";
+		this->m_d = Vector3();
 	}else{
 		this->m_O = A;
 		res.normalize();
 		this->m_d = res;
-	}
-	
+	}	
 }
 
 // @@ TODO: Give the point corresponding to parameter u
@@ -51,7 +51,7 @@ float Line::paramDistance(const Vector3 & P) const {
 	if(den > Vector3::epsilon){
 		return num/den;
 	}else{
-		std::cout<<"CUIDADO: El denominador ha resultado ser 0";
+		std::cout<<"CUIDADO: El denominador ha resultado ser 0\n";
 		return 0;
 	}
 
@@ -62,7 +62,14 @@ float Line::paramDistance(const Vector3 & P) const {
 // dist = ||P - (O + uD)||
 // Where u = paramDistance(P)
 float Line::distance(const Vector3 & P) const {
-	float res = (P - (this->m_O + this->paramDistance(P) * this->m_d)).length();
+	float u = this->paramDistance(P);
+	float res = 0;
+	if(this->m_d.isZero()){
+		std::cout<<"La linea con la que calculas la distacia es un punto. Se devuelve 0";
+		return res;
+	}else{
+		res = (P - at(u)).length();
+	}
 	return res;
 }
 

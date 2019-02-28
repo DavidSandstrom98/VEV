@@ -18,7 +18,7 @@
 //    IREJECT don't intersect
 //Si se cumple alguno de los intervalos del teorema intersectan
 int  BBoxBBoxIntersect(const BBox *bba, const BBox *bbb ) {
-	if( (bba->m_min.x() > bbb->m_max.x() || bbb->m_min.x() > bba->m_max.y()) || 
+	if( (bba->m_min.x() > bbb->m_max.x() || bbb->m_min.x() > bba->m_max.x()) || 
 		(bba->m_min.y() > bbb->m_max.y() || bbb->m_min.y() > bba->m_max.y()) || 
 		(bba->m_min.z() > bbb->m_max.z() || bbb->m_min.z() > bba->m_max.z())){
 		return IREJECT;
@@ -45,7 +45,7 @@ int  BBoxPlaneIntersect (const BBox *theBBox, Plane *thePlane) {
 		x2 = theBBox->m_max.x();
 	}
 
-	if(thePlane->m_n.y() < 0){
+	if(thePlane->m_n.y() < 0.0){
 		y1 = theBBox->m_max.y();
 		y2 = theBBox->m_min.y();
 	}else{
@@ -53,21 +53,28 @@ int  BBoxPlaneIntersect (const BBox *theBBox, Plane *thePlane) {
 		y2 = theBBox->m_max.y();
 	}
 
-	if(thePlane->m_n.z() < 0){
+	if(thePlane->m_n.z() < 0.0){
 		z1 = theBBox->m_max.z();
 		z2 = theBBox->m_min.z();
 	}else{
 		z1 = theBBox->m_min.z();
 		z2 = theBBox->m_max.z();
 	}
+	
 	Vector3 uno(x1, y1, z1);
 	Vector3 dos(x2, y2, z2);
-
-	if(thePlane->whichSide(uno) == 0 || thePlane->whichSide(dos) == 0 || thePlane->whichSide(uno) != thePlane->whichSide(dos)){
+	
+	float a = thePlane->whichSide(uno);
+	float b = thePlane->whichSide(dos);
+	
+	if(a != b){
 		return IINTERSECT;
 	}
-	if(thePlane->whichSide(uno) > 0){
+	
+	if(a > 0){
 		return +IREJECT;
+	}else if(a == 0){
+		return IINTERSECT;
 	}else{
 		return -IREJECT;
 	}
@@ -99,13 +106,13 @@ int BSphereBSphereIntersect(const BSphere *bsa, const BSphere *bsb)
 int BSpherePlaneIntersect(const BSphere *bs, Plane *pl)
 {
 	float dist = pl->distance(bs->m_centre);
-	if (dist > bs->m_radius){
-		if (pl->whichSide(bs->m_centre) > 0){
+	if (dist > bs->m_radius){//Distancia del plano a la esfera mayor que el radio
+		if (pl->whichSide(bs->m_centre) > 0){//Mirar si esta por arriba o abajo
 			return +IREJECT;
 		}else{
 			return -IREJECT;
 		}
-	}else{
+	}else{//Distancia menor
 		return IINTERSECT;
 	}
 }
@@ -117,27 +124,27 @@ int BSpherePlaneIntersect(const BSphere *bs, Plane *pl)
 
 int BSphereBBoxIntersect(const BSphere *sphere, const BBox *box) {
 
-	if(box->m_min.x() >= sphere->m_centre.x() &&  box->m_max.x() <= sphere->m_centre.x() && 
-	   box->m_min.y() >= sphere->m_centre.y() &&  box->m_max.y() <= sphere->m_centre.y() && 
-	   box->m_min.z() >= sphere->m_centre.z() &&  box->m_max.z() <= sphere->m_centre.z()){
+	if( (box->m_min.x() >= sphere->m_centre.x() &&  box->m_max.x() <= sphere->m_centre.x()) && 
+	    (box->m_min.y() >= sphere->m_centre.y() &&  box->m_max.y() <= sphere->m_centre.y()) && 
+	    (box->m_min.z() >= sphere->m_centre.z() &&  box->m_max.z() <= sphere->m_centre.z()) ){
 		   return IINTERSECT;
 	}else{	
 		float distance = 0.0;
 
 		if(sphere->m_centre.x() < box->m_min.x()){
-			distance = distance + pow(sphere->m_centre.x() - box->m_min.x(), 2); 
+			distance = distance + pow(sphere->m_centre.x() - box->m_min.x(), 2.0); 
 		}else if(sphere->m_centre.x() > box->m_max.x()) {
-			distance = distance + pow(sphere->m_centre.x() - box->m_max.x(), 2); 
+			distance = distance + pow(sphere->m_centre.x() - box->m_max.x(), 2.0); 
 		}
 		if(sphere->m_centre.y() < box->m_min.y()){
-			distance = distance + pow(sphere->m_centre.y() - box->m_min.y(), 2); 
+			distance = distance + pow(sphere->m_centre.y() - box->m_min.y(), 2.0); 
 		}else if(sphere->m_centre.y() > box->m_max.y()) {
-			distance = distance + pow(sphere->m_centre.y() - box->m_max.y(), 2); 
+			distance = distance + pow(sphere->m_centre.y() - box->m_max.y(), 2.0); 
 		}
 		if(sphere->m_centre.z() < box->m_min.z()){
-			distance = distance + pow(sphere->m_centre.z() - box->m_min.z(), 2); 
+			distance = distance + pow(sphere->m_centre.z() - box->m_min.z(), 2.0); 
 		}else if(sphere->m_centre.z() > box->m_max.z()) {
-			distance = distance + pow(sphere->m_centre.z() - box->m_max.z(), 2); 
+			distance = distance + pow(sphere->m_centre.z() - box->m_max.z(), 2.0); 
 		}
 		
 		if(distance <= sphere->m_radius * sphere->m_radius) return IINTERSECT;

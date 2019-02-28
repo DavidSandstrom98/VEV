@@ -403,6 +403,8 @@ void Node::updateGS() {
 //    See Recipe 1 in for knowing how to iterate through children.
 
 void Node::draw() {
+	if(this == 0) return;
+	
 	RenderState *rs = RenderState::instance();
 	// Print BBoxes
 	if(rs->getBBoxDraw() || m_drawBBox)

@@ -142,13 +142,16 @@ static void Keyboard (unsigned char key, int x, int y) {
 			T->addRotAxis(Vector3(0.0f, 1.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), -angle_step);
 			break;
 		case 'd':
-			T->addRotY(angle_step);
+			//T->addRotY(angle_step);
+			T->addRotAxis(Vector3(0.0f, 1.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), angle_step);
 			break;
 		case 'w':
-			T->addRotX(-angle_step);
+			//T->addRotX(-angle_step);
+			T->addRotAxis(Vector3(1.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), -angle_step);
 			break;
 		case 'x':
-			T->addRotX(angle_step);
+			//T->addRotX(angle_step);
+			T->addRotAxis(Vector3(1.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), angle_step);
 			break;
 		case 'i':
 			T->addTrans(Vector3(0.0, 0.0, -step));
