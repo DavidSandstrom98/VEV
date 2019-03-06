@@ -334,6 +334,8 @@ void Node::propagateBBRoot() {
 
 void Node::updateBB(){
 	if (this->m_gObject != 0){
+		//Copiar el container del objeto de nuevo y transformarlo
+		this->m_containerWC->clone(m_gObject->getContainer());
 		this->m_containerWC->transform(this->m_placementWC);
 	}else{
 		for (list<Node *>::const_iterator it = m_children.begin(), end = m_children.end(); it != end; ++it){
