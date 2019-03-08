@@ -121,6 +121,10 @@ void OrthographicCamera::updateProjection() {
 // * Also, update projection matrix (projTrfm)
 
 void PerspectiveCamera::updateProjection() {
+	this->m_top = this->m_near * tan(this->m_fovy/2);
+	this->m_bottom = -this->m_top;
+	this->m_right = this->m_aspectRatio * this->m_top;
+	this->m_left = -this->m_right;
 
 	// Leave next line as-is
 	updateFrustumPlanes();
@@ -143,6 +147,17 @@ void Camera::setViewTrfm() {
  */
 
 void Camera::updateFrame () {
+	Vector3 F = this->m_E - this->m_At;
+
+	this->m_R = this->m_Up;
+	this->m_R.normalize();
+	this->m_R.cross(F);
+
+	this->m_Up = F;
+	this->m_Up.cross(this->m_R);
+
+	this->m_D = F;
+
 
 	// leave next line as-is
 	setViewTrfm();
@@ -293,7 +308,7 @@ int Camera::checkFrustum(const BBox *theBBox,
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
-// Hemendik aurrera ez
+// No tocar a partir de aqui
 
 void Camera::updateFrustumPlanes() {
 

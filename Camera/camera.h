@@ -170,14 +170,14 @@ protected:
 	 - origin camera reference system : at m_E
 	*/
 
-	Vector3 m_E;  // View point (default 0, 0  0)
-	Vector3 m_At; // look At point (default 0, 0, -1)
-	Vector3 m_Up; // Up vector X (default 0, 1, 0)
+	Vector3 m_E;  // View point (default 0, 0  0)     punto donde se encuentra la camara
+	Vector3 m_At; // look At point (default 0, 0, -1) punto de mira
+	Vector3 m_Up; // Up vector X (default 0, 1, 0)    vector de vertialidad
 
 	// dependent values
-	Vector3 m_R; //!< right vector (in world coordinates)
-	Vector3 m_U; //!< left vector (in world coordinates)
-	Vector3 m_D; //!< back vector (in world coordinates)
+	Vector3 m_R; //!< right vector (in world coordinates) vector x de la camara
+	Vector3 m_U; //!< left vector (in world coordinates)  vector y de la camara
+	Vector3 m_D; //!< back vector (in world coordinates)  vector z de la camara
 
 
 	Plane *m_fPlanes[MAX_CLIP_PLANES]; // Frustum planes. A 6 elements of type plane. Order: (l,r,b,t,n,f)
