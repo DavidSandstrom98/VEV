@@ -221,6 +221,10 @@ void Camera::projectionTrfmGL(float *gmatrix) const  { m_projTrfm->getGLMatrix(g
 // step               -> number of units to fly (can be negative)
 
 void Camera::fly(float step) {
+	//Actualizar la posicion de la camara y la posicion a la que miro.
+	//Cuidado que m_D va hacia atras. Actualizo la (x y z)
+	this->m_E -= step * m_D;
+	this->m_At -= step * m_D;
 
 	setViewTrfm();
 }
@@ -232,7 +236,12 @@ void Camera::fly(float step) {
 // step               -> number of units to walk (can be negative)
 
 void Camera::walk(float step) {
-
+	//Actualizar la posicion de la camara y la posicion a la que miro.
+	//Cuidado que m_D va hacia atras. Solo actualizo la (x z)
+	Vector3 mover(this->m_D.x(), 0, this->m_D.z());
+	mover *=step;
+	this->m_E -= mover;
+	this->m_At -= mover;
 	setViewTrfm();
 }
 

@@ -253,34 +253,44 @@ static void Keyboard_alt(unsigned char key) {
 			}
 			break;
 		case 'm':
+			printf("alt-m\n");
 			MaterialManager::instance()->print();
 			break;
 		case 't':
+			printf("alt-t\n");
 			TextureManager::instance()->print();
 			break;
 		case 'c':
+			printf("alt-c\n");
 			CameraManager::instance()->print();
 			break;
 		case 'l':
+			printf("alt-l\n");
 			LightManager::instance()->print();
 			break;
 		case 'i':
+			printf("alt-i\n");
 			ImageManager::instance()->print();
 			break;
 		case 'v':
+			printf("alt-v\n");
 			RenderState::instance()->top(RenderState::modelview)->print();
 			break;
 		case 'p':
+			printf("alt-p\n");
 			RenderState::instance()->top(RenderState::projection)->print();
 			break;
 		case 's':
+			printf("alt-s\n");
 			RenderState::instance()->print();
 			break;
 		case 'b':
+			printf("alt-b\n");
 			drawBB = !drawBB;
 			RenderState::instance()->drawBBoxes(drawBB);
 			break;
 		case 'f':
+			printf("alt-f\n");
 			check_cull = 1 - check_cull;
 			break;
 		case '1':
@@ -296,12 +306,14 @@ static void Keyboard_alt(unsigned char key) {
 			displayNode = displayNode->nextSibling();
 			break;
 		case '4':
+			printf("alt-4\n");
 			tex = TextureManager::instance()->find("./obj/cubes/brick.jpg");
 			if (tex) {
 				tex->cycleMagFilter();
 			}
 			break;
 		case '5':
+			printf("alt-5\n");
 			tex = TextureManager::instance()->find("./obj/cubes/brick.jpg");
 			if (tex) {
 				tex->cycleMinFilter();
