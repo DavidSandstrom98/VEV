@@ -466,8 +466,28 @@ void Node::frustumCull(Camera *cam) {
 // Note:
 //    See Recipe 2 in for knowing how to iterate through children inside a const
 //    method.
-
+ 
 const Node *Node::checkCollision(const BSphere *bsph) const {
 	if (!m_checkCollision) return 0;
+
+	if(BSphereBBoxIntersect(this->m_containerWC, bsph)){
+		if(this->m_gObject != 0){
+			return this;
+		}else{
+			Nodo *prueba;
+			for (list<Node *>::const_iterator it = m_children.begin(), end = m_children.end(); it != end; ++it) {
+				Node *theChild = *it;
+				prueba = theChild->checkCollision(bsph);
+				if(prueba != 0){
+					return prueba;
+				}
+			}
+		}
+	}else{
+		return 0;
+	}
+
+
+	
 	return 0; /* No collision */
 }
