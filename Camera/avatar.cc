@@ -22,23 +22,29 @@ bool Avatar::walkOrFly(bool walkOrFly) {
 //
 // AdvanceAvatar: see if avatar can advance 'step' units.
 
-bool Avatar::advance(float step) {
+bool Avatar::advance(float step)
+{
 
 	Node *rootNode = Scene::instance()->rootNode(); // root node of scene
-	Vector3 mover(this->m_D.x(), 0, this->m_D.z());
-	
-	this->m_bsph->setPosition(this->m_bsph->getPosition() + mover * step);
-	if(rootNode->checkCollision(this->m_bsph)!= 0){
-		this->m_walk = false;
-		this->m_bsph->setPosition(this->m_bsph->getPosition() - mover * step);
-	}
 
 	if (m_walk)
 		m_cam->walk(step);
 	else
 		m_cam->fly(step);
+
+	this->m_bsph->setPosition(this->m_cam->getPosition());
+
+	if (rootNode->checkCollision(this->m_bsph))
+	{
+		if (m_walk)
+			m_cam->walk(-step);
+		else
+			m_cam->fly(-step);
+		return false;
+	}
 	return true;
 }
+
 
 void Avatar::leftRight(float angle) {
 	if (m_walk)
