@@ -299,7 +299,7 @@ void Node::detach() {
 //    - placementWC of node and parents are up-to-date
 
 void Node::propagateBBRoot() {
-	if(this->m_parent == 0){
+	if(this == 0){
 		return;
 	}else{
 		this->updateBB();
