@@ -407,7 +407,16 @@ void Node::updateGS() {
 void Node::draw() {
 	if(this == 0) return;
 	
+	ShaderProgram *prev_shader = 0;
 	RenderState *rs = RenderState::instance();
+
+	if (m_isCulled) return;
+
+	// Set shader (save previous)
+	if (m_shader != 0) {
+		prev_shader = rs->getShader();
+		rs->setShader(m_shader);
+	}
 	// Print BBoxes
 	if(rs->getBBoxDraw() || m_drawBBox)
 		BBoxGL::draw( m_containerWC );
@@ -470,7 +479,7 @@ void Node::frustumCull(Camera *cam) {
 const Node *Node::checkCollision(const BSphere *bsph) const {
 	if (!m_checkCollision) return 0;
 
-	if(BSphereBBoxIntersect(this->m_containerWC, bsph)){
+	if(BSphereBBoxIntersect(this->m_containerWC, bsph) == IINTERSECT){
 		if(this->m_gObject != 0){
 			return this;
 		}else{
@@ -478,7 +487,7 @@ const Node *Node::checkCollision(const BSphere *bsph) const {
 			for (list<Node *>::const_iterator it = m_children.begin(), end = m_children.end(); it != end; ++it) {
 				Node *theChild = *it;
 				prueba = theChild->checkCollision(bsph);
-				if(prueba != 0){
+				if(prueba == IINTERSECT){
 					return prueba;
 				}
 			}
