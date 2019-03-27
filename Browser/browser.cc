@@ -21,6 +21,10 @@ static bool runAnimation = false;
 static int startTime;
 static int prevTime;
 
+//Variables para controlar el tiempo de la animacion
+float t = 0.0;
+float inc_t = 0.01;
+
 static void switchAllLights(bool onOff) {
 	for(LightManager::iterator it = LightManager::instance()->begin(), end = LightManager::instance()->end();
 		it != end; ++it) it->switchLight(onOff);
@@ -490,7 +494,7 @@ void idle(void) {
 void animate(int value) {
 	// Set up the next timer tick (do this first)
 	glutTimerFunc(MG_TIMERMSECS, animate, 0);
-
+	RenderState *rs = RenderState::instance();
 	// Measure the elapsed time
 	int currTime = glutGet(GLUT_ELAPSED_TIME);
 	int timeSincePrevFrame = currTime - prevTime;
@@ -499,6 +503,18 @@ void animate(int value) {
 	// ##### REPLACE WITH YOUR OWN GAME/APP MAIN CODE HERE #####
 	if (runAnimation) {
 		// Force a redisplay to render the new image
+
+		
+		if (t > 1.0) {
+			inc_t = -0.01;
+		}
+		if (t < 0.0) {
+			inc_t = 0.01;
+		}
+
+		t = t + inc_t;
+
+		rs->setTime(t);
 
 		glutPostRedisplay();
 	}

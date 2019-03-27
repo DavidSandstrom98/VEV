@@ -34,7 +34,7 @@ bool Avatar::advance(float step)
 
 	this->m_bsph->setPosition(this->m_cam->getPosition());
 
-	if (rootNode->checkCollision(this->m_bsph))
+	if (rootNode->checkCollision(this->m_bsph)!= 0)
 	{
 		if (m_walk)
 			m_cam->walk(-step);

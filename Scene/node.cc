@@ -486,7 +486,7 @@ const Node *Node::checkCollision(const BSphere *bsph) const {
 			for (list<Node *>::const_iterator it = m_children.begin(), end = m_children.end(); it != end; ++it) {
 				Node *theChild = *it;
 				const Node *prueba = theChild->checkCollision(bsph);
-				if(prueba){
+				if(prueba != 0){
 					return prueba;
 				}
 			}

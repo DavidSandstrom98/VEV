@@ -187,6 +187,9 @@ public:
 	 */
 	bool getBBoxDraw() const;
 
+	void setTime(const float t);
+	const float getTime() const;
+
 	void print() const;
 
 private:
@@ -221,4 +224,6 @@ private:
 
 	ShaderProgram *m_activeShader;
 	bool m_drawBBox;
+
+	float m_t;
 };

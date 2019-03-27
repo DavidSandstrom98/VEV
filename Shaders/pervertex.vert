@@ -32,6 +32,8 @@ attribute vec2 v_texCoord;
 varying vec4 f_color;
 varying vec2 f_texCoord;
 
+uniform float u_time;
+
 float lambert_factor(vec3 n, const vec3 l) {
 	return 1.0;
 }
@@ -80,7 +82,12 @@ void main() {
 	//	}
 	// }
 
-	f_color = vec4(1.0);
+	//f_color = vec4(1.0);
+	float s = sin(u_time);
+	float c = cos(u_time);
+	float sc = 1-(s+c)/2;
+	f_color = vec4(s, c, sc, 1);
+	
 	gl_Position = modelToClipMatrix * vec4(v_position, 1.0);
 	f_texCoord = v_texCoord;
 }

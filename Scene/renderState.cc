@@ -188,3 +188,10 @@ void RenderState::print() const {
 	printf("Shader: %s\n", m_activeShader ? m_activeShader->getName().c_str() : "NULL");
 	bool m_drawBBox;
 }
+
+void RenderState::setTime(const float t) {
+	m_t = t;
+}
+const float RenderState::getTime() const {
+	return m_t;
+}

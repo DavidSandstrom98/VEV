@@ -48,6 +48,7 @@ void ShaderProgram::initUniforms() {
 	m_ucameraToClip = GetProgramUniform(name, m_program, "cameraToClipMatrix");
 	m_umodeltoClip = GetProgramUniform(name, m_program, "modelToClipMatrix");
 
+	m_utime = GetProgramUniform(name, m_program, "u_time");
 }
 
 ShaderProgram::~ShaderProgram() {}
@@ -107,11 +108,15 @@ void ShaderProgram::beforeDraw() {
 	Texture *tex;
 	RenderState *rs = RenderState::instance();
 
+	
+
 	shader_set_uniform_matrix4(m_umodeltoCamera, rs->getGLMatrix(RenderState::modelview));
 	shader_set_uniform_matrix4(m_umodeltoWorld, rs->getGLMatrix(RenderState::model));
 	shader_set_uniform_matrix4(m_ucameraToClip, rs->getGLMatrix(RenderState::projection));
 	shader_set_uniform_matrix4(m_umodeltoClip, rs->getGLMatrix(RenderState::modelview_projection));
 	shader_set_uniform(m_uambient, rs->getSceneAmbient());
+
+	shader_set_uniform_1f(m_utime, rs->getTime());
 
 	int i = 0;
 	for(LightManager::iterator it = LightManager::instance()->begin(), end = LightManager::instance()->end();
