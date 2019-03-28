@@ -81,7 +81,18 @@ const float *Light::getPositionEye_4fv() const {
 
 void Light::placeScene() {
 
-	if( ! m_switched ) return;
+	if( !m_switched ) return;
+	RenderState *rs = RenderState::instance();
+	
+	
+
+	if(this->m_type == directional){//Luz direccional
+		this->m_positionEye = RenderState::modelview;
+	}else if (this->m_type == positional){//Luz posicional
+		this->m_positionEye = transformPoint;
+	}else{//Luz tipo flexo
+
+	}
 
 }
 
