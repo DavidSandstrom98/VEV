@@ -79,21 +79,31 @@ const float *Light::getPositionEye_4fv() const {
  *        - multiply position with current modelView matrix
  */
 
-void Light::placeScene() {
+void Light::placeScene()
+{
 
-	if( !m_switched ) return;
+	if (!m_switched)
+		return;
+	//Obtener la matriz modelview actual
 	RenderState *rs = RenderState::instance();
+	Trfm3D *modelviu = rs->top(RenderState::modelview);
 	
-	
-
-	if(this->m_type == directional){//Luz direccional
-		this->m_positionEye = RenderState::modelview;
-	}else if (this->m_type == positional){//Luz posicional
-		this->m_positionEye = transformPoint;
-	}else{//Luz tipo flexo
-
+	//Los vectores es necesario normalizarlos
+	if (this->m_type == directional)
+	{ //Luz direccional. En caso de ser direccional tomaremos la posicion como su direccion
+		this->m_positionEye = modelviu->transformVector(this->m_position);
+		this->m_positionEye.normalize();
 	}
-
+	else if (this->m_type == positional)
+	{ //Luz posicional. Solo actualizar la posicion
+		this->m_positionEye = modelviu->transformPoint(this->m_position);
+	}
+	else
+	{ //Luz tipo flexo. Actualizar tanto la posicion como la direccion
+		this->m_positionEye = modelviu->transformVector(this->m_position);
+		this->m_spotDirectionEye = modelviu->transformPoint(this->m_spotDirection);
+		this->m_spotDirectionEye.normalize();
+	}
 }
 
 void Light::setSpotData(const Vector3 & direction,
