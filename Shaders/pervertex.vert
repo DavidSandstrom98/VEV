@@ -71,14 +71,15 @@ void direction_light(const in int i,
 
 	if(lam > 0.0){
 		diffuse += lam * theMaterial.diffuse;
+		float espectacular = specular_factor(normal, lightDirection, viewDirection, theMaterial.shininess);
+
+		if(espectacular > 0.0){
+			specular += espectacular * theMaterial.specular;
+		}
+
 	}
 
-	float espectacular = specular_factor(normal, lightDirection, viewDirection,theMaterial.shininess);
-
-	if(espectacular > 0.0){
-		specular += espectacular * theMaterial.specular;
-	}
-
+	
 }
 
 void point_light(const in int i,
@@ -86,6 +87,31 @@ void point_light(const in int i,
 				 const in vec3 viewDirection,
 				 const in vec3 normal,
 				 inout vec3 diffuse, inout vec3 specular) {
+	
+	vec3 L = theLights[i].position.xyz - position;
+
+	float dist = length(L);
+	float AtenFac = theLights[i].attenuation[0] + theLights[i].attenuation[1]*dist + theLights[i].attenuation[2]*dist*dist;
+
+	if(AtenFac < 0.00001){
+		AtenFac = 1.0;
+	}else{
+		AtenFac = 1 / AtenFac;
+	}
+
+	float lam = lambert_factor(normal, viewDirection);
+
+	if(lam > 0.0){
+		diffuse += AtenFac * lam * theMaterial.diffuse;
+		float espectacular = specular_factor(normal, normalize(L) , viewDirection, theMaterial.shininess);
+
+		if(espectacular > 0.0){
+			specular += AtenFac * espectacular * theMaterial.specular;
+		}
+	}
+
+	
+
 }
 
 
@@ -109,7 +135,7 @@ void main() {
 	viewDirection = normalize(viewDirection);
 
 	//normal y posicion del vertice en coordenadas de la camara
-	vec3 normal = vec3(modelToCameraMatrix *vec4(v_normal, 0.0)); 
+	vec3 normal = vec3(modelToCameraMatrix * vec4(v_normal, 0.0)); 
 	normal = normalize(normal);
 
 	vec3 lightDirection;
@@ -123,15 +149,17 @@ void main() {
 
 			direction_light(i, lightDirection, viewDirection, normal, diffuse, specular); 	
 		} else {
-		  if (theLights[i].cosCutOff == 0.0) {
-			// point light
-		  } else {
-			// spot light
-		  }
+		  	if (theLights[i].cosCutOff == 0.0) {
+				// point light luz posicional
+				point_light(i, positionEye.xyz, viewDirection, normal, diffuse, specular);
+		  	} else {
+				// spot light foco
+
+		 	}
 		}
 	}
 
-	//Parte de ¡l color relacionada con la animacion
+	//Parte de el color relacionada con la animacion
 	//f_color = vec4(1.0);
 	float s = sin(u_time);
 	float c = cos(u_time);
