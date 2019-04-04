@@ -66,6 +66,7 @@ void direction_light(const in int i,
 					 const in vec3 normal,
 					 inout vec3 diffuse, inout vec3 specular) {
 
+	
 	//Calcular aportacion difusa de la luz al vertice y sumarlo a diffuse
 	float lam = lambert_factor(normal, lightDirection);
 
@@ -100,7 +101,7 @@ void point_light(const in int i,
 		AtenFac = 1 / AtenFac;
 	}
 
-	float lam = lambert_factor(normal, viewDirection);
+	float lam = lambert_factor(normal, L);
 
 		if(lam > 0.0){
 			diffuse += AtenFac * lam * theMaterial.diffuse;
@@ -122,6 +123,26 @@ void spot_light(const in int i,
 				const in vec3 viewDirection,
 				const in vec3 normal,
 				inout vec3 diffuse, inout vec3 specular) {
+	
+	vec3 L = theLights[i].position.xyz - position;//vector del punto a la luz
+	L = normalize(L);
+	
+	float coseno = dot(-L, theLights[i].spotDir);
+
+	if(coseno < 0.0 || coseno < theLights[i].cosCutOff) return;
+	
+	float Cspot = pow( max( dot(-L, theLights[i].spotDir), 0.0), theLights[i].exponent);
+	float lam = lambert_factor(normal, L);
+
+	if(lam > 0.0){
+		diffuse += Cspot * lam * theMaterial.diffuse;
+		float espectacular = specular_factor(normal, L, viewDirection, theMaterial.shininess);
+
+		if(espectacular > 0.0){
+			specular += Cspot * espectacular * theMaterial.specular;
+		}
+	}
+			
 }
 
 void main() {
@@ -152,13 +173,10 @@ void main() {
 		} else {
 		  	if (theLights[i].cosCutOff == 0.0) {
 				// point light luz posicional
-				lightDirection = (-1.0)*theLights[i].position.xyz;//cambiar la direccion y coger solo las tres primeras componentes
-				lightDirection = normalize(lightDirection);//Hay que asegurarse de que esta normalizado
-
 				point_light(i, positionEye.xyz, viewDirection, normal, diffuse, specular);
 		  	} else {
 				// spot light foco
-
+				spot_light(i, positionEye.xyz, viewDirection, normal, diffuse, specular);
 		 	}
 		}
 	}
