@@ -39,7 +39,7 @@ float lambert_factor(vec3 n, const vec3 l) {//Si es 0 no hay componente especula
 	fac = max(0.0,fac);//El maximo entre 0.0 y el factor para asegurar que no sale negativo
 	return fac;
 }
-
+//El factor especular debe estar mal
 float specular_factor(const vec3 n,
 					  const vec3 l,
 					  const vec3 v,
@@ -74,7 +74,7 @@ void direction_light(const in int i,
 		float espectacular = specular_factor(normal, lightDirection, viewDirection, theMaterial.shininess);
 
 		if(espectacular > 0.0){
-			specular += espectacular * theMaterial.specular;
+			specular += espectacular * theMaterial.specular * theLights[i].specular;
 		}
 
 	}
@@ -91,6 +91,7 @@ void point_light(const in int i,
 	vec3 L = theLights[i].position.xyz - position;
 
 	float dist = length(L);
+	L = normalize(L);
 	float AtenFac = theLights[i].attenuation[0] + theLights[i].attenuation[1]*dist + theLights[i].attenuation[2]*dist*dist;
 
 	if(AtenFac < 0.00001){
@@ -101,12 +102,12 @@ void point_light(const in int i,
 
 	float lam = lambert_factor(normal, viewDirection);
 
-	if(lam > 0.0){
-		diffuse += AtenFac * lam * theMaterial.diffuse;
-		float espectacular = specular_factor(normal, normalize(L) , viewDirection, theMaterial.shininess);
+		if(lam > 0.0){
+			diffuse += AtenFac * lam * theMaterial.diffuse;
+			float espectacular = specular_factor(normal, L, viewDirection, theMaterial.shininess);
 
 		if(espectacular > 0.0){
-			specular += AtenFac * espectacular * theMaterial.specular;
+			specular += AtenFac * espectacular * theMaterial.specular ;
 		}
 	}
 
@@ -134,7 +135,7 @@ void main() {
 	vec3 viewDirection = vec3( (0.0, 0.0, 0.0, 1.0) - positionEye );//Vector desde la camara al vertice
 	viewDirection = normalize(viewDirection);
 
-	//normal y posicion del vertice en coordenadas de la camara
+	//normal del vertice en coordenadas de la camara
 	vec3 normal = vec3(modelToCameraMatrix * vec4(v_normal, 0.0)); 
 	normal = normalize(normal);
 
@@ -151,6 +152,9 @@ void main() {
 		} else {
 		  	if (theLights[i].cosCutOff == 0.0) {
 				// point light luz posicional
+				lightDirection = (-1.0)*theLights[i].position.xyz;//cambiar la direccion y coger solo las tres primeras componentes
+				lightDirection = normalize(lightDirection);//Hay que asegurarse de que esta normalizado
+
 				point_light(i, positionEye.xyz, viewDirection, normal, diffuse, specular);
 		  	} else {
 				// spot light foco
