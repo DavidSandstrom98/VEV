@@ -26,14 +26,14 @@ bool Avatar::advance(float step)
 {
 
 	Node *rootNode = Scene::instance()->rootNode(); // root node of scene
-
+	//Comprobar si estoy en modo walk o fly y actuar
 	if (m_walk)
 		m_cam->walk(step);
 	else
 		m_cam->fly(step);
-
+	//Actualizar la posicion del avatar de la camara
 	this->m_bsph->setPosition(this->m_cam->getPosition());
-
+	//En caso de que haya colision, tengo que retornar la camara a donde estaba
 	if (rootNode->checkCollision(this->m_bsph)!= 0)
 	{
 		if (m_walk)

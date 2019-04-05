@@ -120,12 +120,13 @@ void OrthographicCamera::updateProjection() {
 //   frustum (top, bottom, right, left).
 // * Also, update projection matrix (projTrfm)
 
+//Calcula los valores relacionados con la proyeccion de la camara
 void PerspectiveCamera::updateProjection() {
 	this->m_top = this->m_near * tanf(this->m_fovy/2);
 	this->m_bottom = -this->m_top;
 	this->m_right = this->m_aspectRatio * this->m_top;
 	this->m_left = -this->m_right;
-
+	//Una vez calculados los valores hay que actualizar el frustrum para realizar la proyeccion
 	this->m_projTrfm->setFrustum(m_left,m_right,m_bottom, m_top, m_near, m_far);
 	// Leave next line as-is
 	updateFrustumPlanes();
@@ -148,17 +149,20 @@ void Camera::setViewTrfm() {
  */
 
 void Camera::updateFrame () {
-	Vector3 F = this->m_E - this->m_At;
+	Vector3 F = this->m_E - this->m_At;//Vector hacia donde mira la camara
 	F.normalize();
-	this->m_R = this->m_Up;
-	this->m_R.normalize();
+	//Calculo del vector que va hacia la derecha en coordenadas del mundo.
+	//Producto vectorial entre 
+	this->m_R = this->m_Up;//La verticalidad
+	this->m_R.normalize();//Y el vector de mira
 	this->m_R.cross(F);
 
-	this->m_U = F;
-	this->m_U.cross(this->m_R);
+	//Calculo del vector y de la camara en coordenadas del mundo
+	//Producto vectorial entre
+	this->m_U = F;//Vector de mira
+	this->m_U.cross(this->m_R);//Vector derecha de la camara
 
-	this->m_D = F;
-
+	this->m_D = F;//Vector de mira
 
 	// leave next line as-is
 	setViewTrfm();
@@ -221,6 +225,12 @@ void Camera::projectionTrfmGL(float *gmatrix) const  { m_projTrfm->getGLMatrix(g
 // thisCamera         -> the camera
 // step               -> number of units to fly (can be negative)
 
+/**
+ * Hay que actualizar la posicion de la camara y la posicion de mira.
+ * Tener cuidado porque m_D va hacia atras.
+ * Esta funcion te mueve en la posicion de mira.
+ * Actualiza la posicion en los ejes que sea necesario (x, y, z)
+ **/
 void Camera::fly(float step) {
 	//Actualizar la posicion de la camara y la posicion a la que miro.
 	//Cuidado que m_D va hacia atras. Actualizo la (x y z)
@@ -236,13 +246,18 @@ void Camera::fly(float step) {
 // thisCamera         -> the camera
 // step               -> number of units to walk (can be negative)
 
+/**
+ * Hay que actualizar la posicion de la camara y la posicion de mira.
+ * Tener cuidado porque m_D va hacia atras.
+ * Esta funcion aunque mires para arriba y quieras ir hacia arriba ni subes ni bajas.
+ * Solo actualiza la posicion en los ejes (x, z)
+ **/ 
 void Camera::walk(float step) {
-	//Actualizar la posicion de la camara y la posicion a la que miro.
-	//Cuidado que m_D va hacia atras. Solo actualizo la (x z)
+
 	Vector3 mover(this->m_D.x(), 0, this->m_D.z());
 	mover *=step;
-	this->m_E -= mover;
-	this->m_At -= mover;
+	this->m_E -= mover;//Punto de mira
+	this->m_At -= mover;//Punto en el que me encuentro
 	setViewTrfm();
 }
 

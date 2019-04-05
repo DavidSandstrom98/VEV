@@ -477,12 +477,13 @@ void Node::frustumCull(Camera *cam) {
 //    method.
  
 const Node *Node::checkCollision(const BSphere *bsph) const {
-	if (!m_checkCollision) return 0;
-
+	if (!m_checkCollision) return 0;//Si el nodo en Null no hay colision
+	//Compruebo si el avatar instersecta con el nodo actual
 	if(BSphereBBoxIntersect(bsph, this->m_containerWC) == IINTERSECT){
-		if(this->m_gObject){
+		if(this->m_gObject){//Caso de que sea un nodo hoja, hay interseccion con el objeto
 			return this;
 		}else{
+			//En caso contrario compruebo si sus hijos colisionan
 			for (list<Node *>::const_iterator it = m_children.begin(), end = m_children.end(); it != end; ++it) {
 				Node *theChild = *it;
 				const Node *prueba = theChild->checkCollision(bsph);

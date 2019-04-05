@@ -35,22 +35,25 @@ varying vec2 f_texCoord;
 uniform float u_time;
 
 float lambert_factor(vec3 n, const vec3 l) {//Si es 0 no hay componente especular
-	float fac = dot(n,l);//producto escalar
+	float fac = dot(n,l);//producto escalar entre la normal del vertice y la direccion de la luz
 	fac = max(0.0,fac);//El maximo entre 0.0 y el factor para asegurar que no sale negativo
 	return fac;
 }
-//El factor especular debe estar mal
+
 float specular_factor(const vec3 n,
 					  const vec3 l,
 					  const vec3 v,
 					  float m) {
+	//Producto escalar entre la normal del vertice y la direccion de la luz
 	float NoL = dot(n, l);
-
 	if(NoL <= 0.0) return 0.0;
 
+	//r es el vector con el que sale el reflejo especular de la luz
+	//v es el vector que va desde el vertice hasta la camara
 	vec3 r = 2 * NoL * n - l;
 	float RoV = dot(r, v);
 
+	//Aplicar el shinninesh del objeto. Lo pulido que esta
 	if(RoV > 0.0){
 		RoV = NoL * pow(RoV, m);
 	}else{
@@ -69,11 +72,11 @@ void direction_light(const in int i,
 	
 	//Calcular aportacion difusa de la luz al vertice y sumarlo a diffuse
 	float lam = lambert_factor(normal, lightDirection);
-
+	//Solo si hay aportacion difusa puede haber luz difusa y especular
 	if(lam > 0.0){
-		diffuse += lam * theMaterial.diffuse;
-		float espectacular = specular_factor(normal, lightDirection, viewDirection, theMaterial.shininess);
+		diffuse += lam * theMaterial.diffuse * theLights[i].diffuse;
 
+		float espectacular = specular_factor(normal, lightDirection, viewDirection, theMaterial.shininess);
 		if(espectacular > 0.0){
 			specular += espectacular * theMaterial.specular * theLights[i].specular;
 		}
@@ -89,26 +92,27 @@ void point_light(const in int i,
 				 const in vec3 normal,
 				 inout vec3 diffuse, inout vec3 specular) {
 	
+	//Vector que va de la luz al vertice
 	vec3 L = theLights[i].position.xyz - position;
 
-	float dist = length(L);
-	L = normalize(L);
+	float dist = length(L);//Obtener la distancia a la que se encuentra la luz del vertice
+	L = normalize(L);//NORMALIZAR LA DIRECCION DE LA LUZ AL VERTICE
 	float AtenFac = theLights[i].attenuation[0] + theLights[i].attenuation[1]*dist + theLights[i].attenuation[2]*dist*dist;
 
-	if(AtenFac < 0.00001){
-		AtenFac = 1.0;
-	}else{
+	//if(AtenFac < 0.00001){
+	//	AtenFac = 1.0;
+	//}else{
 		AtenFac = 1 / AtenFac;
-	}
+	//}
 
 	float lam = lambert_factor(normal, L);
-
-		if(lam > 0.0){
-			diffuse += AtenFac * lam * theMaterial.diffuse;
-			float espectacular = specular_factor(normal, L, viewDirection, theMaterial.shininess);
+	//Igual que el la luz direccional. Si no hay difusa ni hay difusa ni especular
+	if(lam > 0.0){
+		diffuse += AtenFac * lam * theMaterial.diffuse * theLights[i].diffuse;
+		float espectacular = specular_factor(normal, L, viewDirection, theMaterial.shininess);
 
 		if(espectacular > 0.0){
-			specular += AtenFac * espectacular * theMaterial.specular ;
+			specular += AtenFac * espectacular * theMaterial.specular * theLights[i].specular;
 		}
 	}
 
@@ -118,28 +122,28 @@ void point_light(const in int i,
 
 
 // Note: no attenuation in spotlights
-void spot_light(const in int i,
-				const in vec3 position,
-				const in vec3 viewDirection,
-				const in vec3 normal,
+void spot_light(const in int i, //Id de la luz
+				const in vec3 position,//Posicion del vertice
+				const in vec3 viewDirection, //Direccion del vertice a la camara
+				const in vec3 normal, //Normal del vertice
 				inout vec3 diffuse, inout vec3 specular) {
 	
 	vec3 L = theLights[i].position.xyz - position;//vector del punto a la luz
 	L = normalize(L);
-	
+	//Coseno del angulo entre el vector de direccion de la luz y el que va de la luz al vertice 
 	float coseno = dot(-L, theLights[i].spotDir);
-
+	//Comprobar que el vertice esta dentro del cono de vision
 	if(coseno < 0.0 || coseno < theLights[i].cosCutOff) return;
-	
+	//Factor de atenuacion con el angulo de apertura
 	float Cspot = pow( max( dot(-L, theLights[i].spotDir), 0.0), theLights[i].exponent);
 	float lam = lambert_factor(normal, L);
 
 	if(lam > 0.0){
-		diffuse += Cspot * lam * theMaterial.diffuse;
+		diffuse += Cspot * lam * theMaterial.diffuse * theLights[i].diffuse;
 		float espectacular = specular_factor(normal, L, viewDirection, theMaterial.shininess);
 
 		if(espectacular > 0.0){
-			specular += Cspot * espectacular * theMaterial.specular;
+			specular += Cspot * espectacular * theMaterial.specular * theLights[i].specular;
 		}
 	}
 			
@@ -147,13 +151,15 @@ void spot_light(const in int i,
 
 void main() {
 
-	//Pasar v_position y v_normal al espacio de la camara
+	//Vectores que haran de acumuladores de iluminacion difusa y especular
 	vec3 diffuse = vec3(0.0);
 	vec3 specular = vec3(0.0);
 
-	vec4 positionEye = modelToCameraMatrix * vec4(v_position, 1.0);//Posicion del vertice en coordenadas de la camara
+	//Posicion del vertice en coordenadas de la camara
+	vec4 positionEye = modelToCameraMatrix * vec4(v_position, 1.0);
 
-	vec3 viewDirection = vec3( (0.0, 0.0, 0.0, 1.0) - positionEye );//Vector desde la camara al vertice
+	//Vector desde el vertice a la camara NORMALIZADO
+	vec3 viewDirection = vec3( (0.0, 0.0, 0.0, 1.0) - positionEye );
 	viewDirection = normalize(viewDirection);
 
 	//normal del vertice en coordenadas de la camara
@@ -164,10 +170,11 @@ void main() {
 	
 	for(int i=0; i < active_lights_n; ++i) {
 		if(theLights[i].position.w == 0.0) {
-		  	// direction light
-			//Con el material se puede sacar factor comun y multiplicar solo al final
-			lightDirection = (-1.0)*theLights[i].position.xyz;//cambiar la direccion y coger solo las tres primeras componentes
-			lightDirection = normalize(lightDirection);//Hay que asegurarse de que esta normalizado
+		  	//direction light
+			//Vector de la luz invertido. YA ESTA EN COORDENADAS DE LA CAMARA  
+			//Hay que asegurarse de que esta normalizado
+			lightDirection = (-1.0)*theLights[i].position.xyz;
+			lightDirection = normalize(lightDirection);
 
 			direction_light(i, lightDirection, viewDirection, normal, diffuse, specular); 	
 		} else {
