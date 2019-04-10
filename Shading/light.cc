@@ -100,8 +100,8 @@ void Light::placeScene()
 	}
 	else
 	{ //Luz tipo flexo. Actualizar tanto la posicion como la direccion
-		this->m_positionEye = modelviu->transformVector(this->m_position);
-		this->m_spotDirectionEye = modelviu->transformPoint(this->m_spotDirection);
+		this->m_positionEye = modelviu->transformPoint(this->m_position);
+		this->m_spotDirectionEye = modelviu->transformVector(this->m_spotDirection);
 		this->m_spotDirectionEye.normalize();
 	}
 }

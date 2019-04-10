@@ -126,8 +126,10 @@ void PerspectiveCamera::updateProjection() {
 	this->m_bottom = -this->m_top;
 	this->m_right = this->m_aspectRatio * this->m_top;
 	this->m_left = -this->m_right;
+
 	//Una vez calculados los valores hay que actualizar el frustrum para realizar la proyeccion
-	this->m_projTrfm->setFrustum(m_left,m_right,m_bottom, m_top, m_near, m_far);
+	this->m_projTrfm->setFrustum(m_left, m_right, m_bottom, m_top, m_near, m_far);
+	
 	// Leave next line as-is
 	updateFrustumPlanes();
 }

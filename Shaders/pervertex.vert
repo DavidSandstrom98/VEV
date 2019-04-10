@@ -76,9 +76,9 @@ void direction_light(const in int i,
 	if(lam > 0.0){
 		diffuse += lam * theMaterial.diffuse * theLights[i].diffuse;
 
-		float espectacular = specular_factor(normal, lightDirection, viewDirection, theMaterial.shininess);
-		if(espectacular > 0.0){
-			specular += espectacular * theMaterial.specular * theLights[i].specular;
+		float especular = specular_factor(normal, lightDirection, viewDirection, theMaterial.shininess);
+		if(especular > 0.0){
+			specular += especular * theMaterial.specular * theLights[i].specular;
 		}
 
 	}
@@ -99,20 +99,20 @@ void point_light(const in int i,
 	L = normalize(L);//NORMALIZAR LA DIRECCION DE LA LUZ AL VERTICE
 	float AtenFac = theLights[i].attenuation[0] + theLights[i].attenuation[1]*dist + theLights[i].attenuation[2]*dist*dist;
 
-	//if(AtenFac < 0.00001){
-	//	AtenFac = 1.0;
-	//}else{
+	if(AtenFac < 0.00001){
+		AtenFac = 1.0;
+	}else{
 		AtenFac = 1 / AtenFac;
-	//}
+	}
 
 	float lam = lambert_factor(normal, L);
 	//Igual que el la luz direccional. Si no hay difusa ni hay difusa ni especular
 	if(lam > 0.0){
 		diffuse += AtenFac * lam * theMaterial.diffuse * theLights[i].diffuse;
-		float espectacular = specular_factor(normal, L, viewDirection, theMaterial.shininess);
+		float especular = specular_factor(normal, L, viewDirection, theMaterial.shininess);
 
-		if(espectacular > 0.0){
-			specular += AtenFac * espectacular * theMaterial.specular * theLights[i].specular;
+		if(especular > 0.0){
+			specular += AtenFac * especular * theMaterial.specular * theLights[i].specular;
 		}
 	}
 
@@ -135,15 +135,15 @@ void spot_light(const in int i, //Id de la luz
 	//Comprobar que el vertice esta dentro del cono de vision
 	if(coseno < 0.0 || coseno < theLights[i].cosCutOff) return;
 	//Factor de atenuacion con el angulo de apertura
-	float Cspot = pow( max( dot(-L, theLights[i].spotDir), 0.0), theLights[i].exponent);
+	float Cspot = pow( max( coseno, 0.0), theLights[i].exponent);
 	float lam = lambert_factor(normal, L);
 
 	if(lam > 0.0){
 		diffuse += Cspot * lam * theMaterial.diffuse * theLights[i].diffuse;
-		float espectacular = specular_factor(normal, L, viewDirection, theMaterial.shininess);
+		float especular = specular_factor(normal, L, viewDirection, theMaterial.shininess);
 
-		if(espectacular > 0.0){
-			specular += Cspot * espectacular * theMaterial.specular * theLights[i].specular;
+		if(especular > 0.0){
+			specular += Cspot * especular * theMaterial.specular * theLights[i].specular;
 		}
 	}
 			
@@ -190,10 +190,10 @@ void main() {
 
 	//Parte de el color relacionada con la animacion
 	//f_color = vec4(1.0);
-	float s = sin(u_time);
+	/*float s = sin(u_time);
 	float c = cos(u_time);
 	float sc = 1-(s+c)/2;
-	f_color = vec4(s, c, sc, 1);
+	f_color = vec4(s, c, sc, 1);*/
 	
 	f_color.rgb = scene_ambient + diffuse + specular;
 	f_color.a = 1.0;

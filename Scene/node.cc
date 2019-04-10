@@ -492,8 +492,7 @@ const Node *Node::checkCollision(const BSphere *bsph) const {
 				}
 			}
 			return 0;
-		}
-		
+		}	
 	}else{
 		return 0;
 	}
