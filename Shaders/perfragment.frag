@@ -168,10 +168,10 @@ void main() {
 		} else {
 		  	if (theLights[i].cosCutOff == 0.0) {
 				// point light luz posicional
-				//point_light(i, positionEye.xyz, viewDirection, normal, diffuse, specular);
+				point_light(i, positionEye.xyz, viewDirection, normal, diffuse, specular);
 		  	} else {
 				// spot light foco
-				//spot_light(i, positionEye.xyz, viewDirection, normal, diffuse, specular);
+				spot_light(i, positionEye.xyz, viewDirection, normal, diffuse, specular);
 		 	}
 		}
 	}

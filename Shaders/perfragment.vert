@@ -20,7 +20,7 @@ void main() {
 	//En este caso no hay que normalizar la normal.
 	//Si no al hacer la interpolacion pueden pasar cosas raras.
 	f_position = vec3( modelToCameraMatrix * vec4(v_position, 1.0) );
-	f_normal = vec3( modelToCameraMatrix * vec4(v_position, 0.0) );
+	f_normal = vec3( modelToCameraMatrix * vec4(v_normal, 0.0) );
 	f_texCoord = v_texCoord;
 	f_viewDirection = vec3( (0.0, 0.0, 0.0, 1.0) - f_position );
 
