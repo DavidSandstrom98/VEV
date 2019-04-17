@@ -144,7 +144,7 @@ void main() {
 	vec3 specular = vec3(0.0);
 
 	//Posicion del vertice en coordenadas de la camara
-	vec4 positionEye = f_position;
+	vec4 positionEye = vec4(f_position, 1.0);
 
 	//Vector desde el vertice a la camara NORMALIZADO
 	vec3 viewDirection = f_viewDirection;
@@ -159,7 +159,7 @@ void main() {
 	for(int i=0; i < active_lights_n; ++i) {
 		if(theLights[i].position.w == 0.0) {
 		  	//direction light
-			//Vector de la luz invertido. YA ESTA EN COORDENADAS DE LA CAMARA  
+			//Vector de la luz invertido.
 			//Hay que asegurarse de que esta normalizado
 			lightDirection = (-1.0)*theLights[i].position.xyz;
 			lightDirection = normalize(lightDirection);
@@ -168,14 +168,16 @@ void main() {
 		} else {
 		  	if (theLights[i].cosCutOff == 0.0) {
 				// point light luz posicional
-				point_light(i, positionEye.xyz, viewDirection, normal, diffuse, specular);
+				//point_light(i, positionEye.xyz, viewDirection, normal, diffuse, specular);
 		  	} else {
 				// spot light foco
-				spot_light(i, positionEye.xyz, viewDirection, normal, diffuse, specular);
+				//spot_light(i, positionEye.xyz, viewDirection, normal, diffuse, specular);
 		 	}
 		}
 	}
-	vec4 f_color.rgb = scene_ambient + diffuse + specular;
+
+	vec4 f_color;
+	f_color.rgb = scene_ambient + diffuse + specular;
 	f_color.a = 1.0;
 
 	vec4 f_texColor = texture2D(texture0, f_texCoord);
