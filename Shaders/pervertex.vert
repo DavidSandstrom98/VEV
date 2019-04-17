@@ -116,8 +116,6 @@ void point_light(const in int i,
 		}
 	}
 
-	
-
 }
 
 
@@ -146,7 +144,7 @@ void spot_light(const in int i, //Id de la luz
 			specular += Cspot * especular * theMaterial.specular * theLights[i].specular;
 		}
 	}
-			
+
 }
 
 void main() {
