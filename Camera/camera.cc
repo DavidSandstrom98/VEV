@@ -330,8 +330,21 @@ void  Camera::arcLeftRight(float angle) {
 
 int Camera::checkFrustum(const BBox *theBBox,
 						 unsigned int *planesBitM) {
+	int resul;
+	int intersecta = -1;
+	for(int i = 0; i < 6; i++)
+	{
+		resul = BBoxPlaneIntersect(theBBox, this->m_fPlanes[i]);
+		if(resul == IINTERSECT)
+		{
+			intersecta = 0; //Caso en que el BBox se encuentra a medias
+		}else if(resul == +IREJECT){
+			return 1;//Totalmente fuera del frustum			
+		}
 
-	return -1; // BBox is fully inside the frustum
+	}
+	//*planesBitM = 2;//Cantidad de planos con los que intersecta. No es necesario
+	return intersecta; // BBox is fully inside the frustum
 }
 
 /////////////////////////////////////////////////////////////////////////////////////

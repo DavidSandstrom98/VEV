@@ -463,7 +463,27 @@ void Node::setCulled(bool culled) {
 // @@ TODO: Frustum culling. See if a subtree is culled by the camera, and
 //          update m_isCulled accordingly.
 
-void Node::frustumCull(Camera *cam) {
+void Node::frustumCull(Camera *cam)
+{
+	int colision = cam->checkFrustum(this->m_containerWC, NULL);
+	switch (colision)
+	{
+	case 1: //Se encuentra totalmente fuera
+		this->setCulled(true);
+		break;
+	case -1: //Se encuentra totalmente dentro
+		this->setCulled(false);
+		break;
+
+	default: //Se encuentra a medias
+		this->m_isCulled = false;
+		for (list<Node *>::iterator it = m_children.begin(), end = m_children.end(); it != end; ++it)
+		{
+			Node *theChild = *it;
+			theChild->frustumCull(cam); // Recursive call
+		}
+		break;
+	}
 }
 
 // @@ TODO: Check whether a BSphere (in world coordinates) intersects with a
