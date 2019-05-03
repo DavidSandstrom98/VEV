@@ -54,12 +54,12 @@ void main() {
 
 	for (int i = 0; i < 4; i++)
 	{
-		if(theLights[i].position.w == 1.0)//Luz direccional
+		if(theLights[i].position.w == 1.0)//Luz no direccional
 			f_lightDirection[i] = TangentMatrix * normalize(theLights[i].position.xyz - cameraPosition);
-		else//luz posicional o linterna
+		else//luz direccional
 			f_lightDirection[i] = TangentMatrix * -theLights[i].position.xyz;
 		
-		//if(theLights[i].cosCutOff > 0.0)//Solo para las linternas
+		if(theLights[i].cosCutOff > 0.0)//Solo para las linternas
 			f_spotDirection[i] = TangentMatrix * theLights[i].spotDir;
 	}
 

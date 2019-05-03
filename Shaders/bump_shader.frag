@@ -116,9 +116,8 @@ void spot_light(const in int i,
 				const in vec3 normal,
 				inout vec3 diffuse, inout vec3 specular) {
 
-	//vec3 L = theLights[i].position.xyz - position;//vector del punto a la luz
-	vec3 L = f_lightDirection[i];
-	L = normalize(L);
+	//vector del punto a la luz
+	vec3 L = normalize(f_lightDirection[i]);
 	//Coseno del angulo entre el vector de direccion de la luz y el que va de la luz al vertice 
 	float coseno = dot(-L, normalize(f_spotDirection[i]));
 	//Comprobar que el vertice esta dentro del cono de vision
