@@ -5,7 +5,7 @@
 // All computations are performed in the tangent space; therefore, we need to
 // convert all light (and spot) directions and view directions to tangent space
 // and pass them the fragment shader.
-
+// ./browser Json/scene_bmap.json
 varying vec2 f_texCoord;
 varying vec3 f_viewDirection;     // tangent space
 varying vec3 f_lightDirection[4]; // tangent space
@@ -15,8 +15,8 @@ varying vec3 f_spotDirection[4];  // tangent space
 attribute vec3 v_position;
 attribute vec3 v_normal;
 attribute vec2 v_texCoord;
-attribute vec3 v_TBN_t;
-attribute vec3 v_TBN_b;
+attribute vec3 v_TBN_t;//Tangente
+attribute vec3 v_TBN_b;//Bitangente
 
 uniform mat4 modelToCameraMatrix;
 uniform mat4 modelToWorldMatrix;
@@ -36,9 +36,34 @@ uniform struct light_t {
 } theLights[4];     // MG_MAX_LIGHTS
 
 void main() {
-	vec3 L;
 
 	mat3 MV3x3 = mat3(modelToCameraMatrix); // 3x3 modelview matrix
+
+	//Tangente, bitangente, normal y posicion del vertice en coordenadas de la camara
+	vec3 cameraTangent = normalize(MV3x3 * v_TBN_t);
+	vec3 cameraBiTangent = normalize(MV3x3 * v_TBN_b);
+	vec3 cameraNormal = normalize(MV3x3 * v_normal);
+	vec3 cameraPosition = (modelToCameraMatrix * vec4(v_position, 1.0)).xyz;
+
+	//Por defecto se crea por columnas
+	//leido por filas normal, tangente y bitangente.
+	mat3 TangentMatrix = transpose(mat3(cameraTangent, cameraBiTangent, cameraNormal));
+	
+	//Vector de la camara al punto
+	f_viewDirection = TangentMatrix * (-cameraPosition);
+
+	for (int i = 0; i < 4; i++)
+	{
+		if(theLights[i].position.w == 1.0)//Luz direccional
+			f_lightDirection[i] = TangentMatrix * normalize(theLights[i].position.xyz - cameraPosition);
+		else//luz posicional o linterna
+			f_lightDirection[i] = TangentMatrix * -theLights[i].position.xyz;
+		
+		//if(theLights[i].cosCutOff > 0.0)//Solo para las linternas
+			f_spotDirection[i] = TangentMatrix * theLights[i].spotDir;
+	}
+
+	f_texCoord = v_texCoord;
 
 	gl_Position = modelToClipMatrix * vec4(v_position, 1.0);
 }
