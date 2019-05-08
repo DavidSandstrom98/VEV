@@ -195,3 +195,19 @@ void RenderState::setTime(const float t) {
 const float RenderState::getTime() const {
 	return m_t;
 }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void RenderState::setSombras(TextureRT* sombras){
+	this->mapaSombras = sombras;
+}
+	
+TextureRT* RenderState::getSombras(){
+	return this->mapaSombras;
+}
+
+void RenderState::setlightC(Trfm3D* camara){
+	this->lightC = camara;
+}
+
+Trfm3D* RenderState::getLightC(){
+	return this->lightC;
+}

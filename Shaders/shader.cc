@@ -49,6 +49,10 @@ void ShaderProgram::initUniforms() {
 	m_umodeltoClip = GetProgramUniform(name, m_program, "modelToClipMatrix");
 
 	m_utime = GetProgramUniform(name, m_program, "u_time");
+
+	///////////////////////////////////////////////////////////////////////////////Sombras
+	
+
 }
 
 ShaderProgram::~ShaderProgram() {}

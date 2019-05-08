@@ -40,9 +40,9 @@ void main() {
 	mat3 MV3x3 = mat3(modelToCameraMatrix); // 3x3 modelview matrix
 
 	//Tangente, bitangente, normal y posicion del vertice en coordenadas de la camara
-	vec3 cameraTangent = normalize(MV3x3 * v_TBN_t);
-	vec3 cameraBiTangent = normalize(MV3x3 * v_TBN_b);
-	vec3 cameraNormal = normalize(MV3x3 * v_normal);
+	vec3 cameraTangent = MV3x3 * v_TBN_t;
+	vec3 cameraBiTangent = MV3x3 * v_TBN_b;
+	vec3 cameraNormal = MV3x3 * v_normal;
 	vec3 cameraPosition = (modelToCameraMatrix * vec4(v_position, 1.0)).xyz;
 
 	//Por defecto se crea por columnas
@@ -55,12 +55,13 @@ void main() {
 	for (int i = 0; i < 4; i++)
 	{
 		if(theLights[i].position.w == 1.0)//Luz no direccional
-			f_lightDirection[i] = TangentMatrix * normalize(theLights[i].position.xyz - cameraPosition);
+			f_lightDirection[i] = TangentMatrix * (theLights[i].position.xyz - cameraPosition);
 		else//luz direccional
-			f_lightDirection[i] = TangentMatrix * -theLights[i].position.xyz;
+			f_lightDirection[i] = TangentMatrix * (-theLights[i].position.xyz);
 		
-		if(theLights[i].cosCutOff > 0.0)//Solo para las linternas
+		//if(theLights[i].cosCutOff > 0.0)//Solo para las linternas
 			f_spotDirection[i] = TangentMatrix * theLights[i].spotDir;
+		
 	}
 
 	f_texCoord = v_texCoord;

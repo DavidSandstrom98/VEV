@@ -192,6 +192,13 @@ public:
 
 	void print() const;
 
+	//Sombras
+	void setSombras(TextureRT* sombras);
+	TextureRT* getSombras();
+
+	void setlightC(Trfm3D* camara);
+	Trfm3D *getLightC();
+
 private:
 	RenderState();
 	~RenderState();
@@ -226,4 +233,8 @@ private:
 	bool m_drawBBox;
 
 	float m_t;
+
+	//Sombras
+	TextureRT *mapaSombras;
+	Trfm3D *lightC;
 };

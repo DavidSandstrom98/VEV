@@ -148,6 +148,14 @@ static void InitCamera(int Width, int Height) {
 	cam->init(30.0f * Constants::degree_to_rad, (float)Width / (float) Height, 0.1f, 2500.0f);
 }
 
+static void InitShadowCamera(int Width, int Height) {
+	PerspectiveCamera *cam = CameraManager::instance()->createPerspective("shadowCamera");
+	cam->lookAt(Vector3(0.0f, 150.0f, -100.0f),   // position
+				Vector3(0.0f, 149.0f, -100.0f),  // look-at
+				Vector3(-1.0f, 0.0f, -1.0f));  // up vector
+	cam->init(30.0f * Constants::degree_to_rad, (float)Width / (float) Height, 100.0f, 1000.0f);
+}
+
 static void InitAvatar() {
 	Camera *theCamera = CameraManager::instance()->find("mainCamera");
 	if (!theCamera) return; // no main camera
@@ -202,7 +210,7 @@ static void Resize(int Width, int Height) {
 	theCamera->onResize(Width, Height);
 	glViewport(0, 0, (GLsizei) Width, (GLsizei) Height); // TODO should go to context
 }
-
+//No hay que modificarlo para las sombras
 static void Render(Camera *theCamera) {
 
 	RenderState *rs = RenderState::instance();
@@ -235,6 +243,10 @@ static void Display() {
 
 	Render(theCamera);
 	glutSwapBuffers();
+}
+
+static void DisplaySahdow(){
+
 }
 
 // Keyboard dispatcher when ALT key is pressed

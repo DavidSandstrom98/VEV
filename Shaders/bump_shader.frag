@@ -123,7 +123,7 @@ void spot_light(const in int i,
 	//Comprobar que el vertice esta dentro del cono de vision
 	if(coseno < 0.0 || coseno < theLights[i].cosCutOff) return;
 	//Factor de atenuacion con el angulo de apertura
-	float Cspot = pow( max( coseno, 0.0), theLights[i].exponent);
+	float Cspot = pow( max(coseno, 0.0), theLights[i].exponent);
 	float lam = lambert_factor(normal, L);
 
 	if(lam > 0.0){
