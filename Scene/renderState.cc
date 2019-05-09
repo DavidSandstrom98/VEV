@@ -211,3 +211,9 @@ void RenderState::setlightC(Trfm3D* camara){
 Trfm3D* RenderState::getLightC(){
 	return this->lightC;
 }
+
+float *RenderState::getLightMatrix(){
+	float * glmatrix = new float[16];
+	this->lightC->getGLMatrix(glmatrix);
+	return glmatrix;
+}

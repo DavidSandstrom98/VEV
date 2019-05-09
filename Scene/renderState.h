@@ -199,6 +199,8 @@ public:
 	void setlightC(Trfm3D* camara);
 	Trfm3D *getLightC();
 
+	float *getLightMatrix();
+
 private:
 	RenderState();
 	~RenderState();

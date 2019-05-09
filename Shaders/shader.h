@@ -80,4 +80,8 @@ private:
 
 	GLint m_utime;
 
+	//Sombras
+	GLint m_modelToShadow;
+	GLint m_shadowmap;
+
 };

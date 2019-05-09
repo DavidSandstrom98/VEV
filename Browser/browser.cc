@@ -169,6 +169,7 @@ static void InitShaders() {
 	mgr->create("perfragment", "Shaders/perfragment.vert", "Shaders/perfragment.frag");
 	mgr->create("bump", "Shaders/bump_shader.vert", "Shaders/bump_shader.frag");
 	mgr->create("sky", "Shaders/sky.vert", "Shaders/sky.frag");
+	mgr->create("Shadow", "Shaders/shadowmap.vert", "Shaders/shadowmap.frag");
 }
 
 static void check_cull_camera() {
@@ -209,6 +210,13 @@ static void Resize(int Width, int Height) {
 		Height=1;
 	theCamera->onResize(Width, Height);
 	glViewport(0, 0, (GLsizei) Width, (GLsizei) Height); // TODO should go to context
+	
+	Camera *Shadow = CameraManager::instance()->find("shadowCamera");
+	if (!Shadow) return; // no main camera
+	if (Height==0)				// Prevent A Divide By Zero If The Window Is Too Small
+		Height=1;
+	Shadow->onResize(Width, Height);
+	glViewport(0, 0, (GLsizei) Width, (GLsizei) Height); // TODO should go to context
 }
 //No hay que modificarlo para las sombras
 static void Render(Camera *theCamera) {
@@ -246,7 +254,27 @@ static void Display() {
 }
 
 static void DisplaySahdow(){
+	Camera *theCamera;
+	theCamera = CameraManager::instance()->find("shadowCamera");
+	if (theCamera){
+		Scene::instance()->rootNode()->frustumCull(theCamera);
+		RenderState *rs =  RenderState::instance();
+		TextureRT *tex = rs->getSombras();
+		tex->bind();
+		Render(theCamera);
+		tex->unbind();
+	}  // no shadow camera camera
 
+	
+
+
+	theCamera = CameraManager::instance()->find("mainCamera");
+	if (!theCamera) return; // no main camera
+
+	Scene::instance()->rootNode()->frustumCull(theCamera); // Frustum Culling
+
+	Render(theCamera);
+	glutSwapBuffers();
 }
 
 // Keyboard dispatcher when ALT key is pressed
@@ -555,6 +583,7 @@ int main(int argc, char** argv) {
 	} else {
 		// regular scene
 		InitCamera(1800, 1400);
+		InitShadowCamera(1800, 1400);
 		//InitCamera(900, 700);
 		InitAvatar();
 		InitLight();
