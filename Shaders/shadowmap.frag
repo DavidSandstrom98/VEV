@@ -21,6 +21,9 @@ uniform struct material_t {
 } theMaterial;
 
 uniform sampler2D texture0;
+
+uniform sampler2D shadowMap;
+
 //Solo lectura
 varying vec3 f_position;      // camera space
 varying vec3 f_viewDirection; // camera space del pixel a la camara
@@ -156,7 +159,7 @@ void main() {
 
 	vec3 lightDirection;
 
-	for(int i=0; i < active_lights_n; ++i) {
+	for(int i=0; i < /*active_lights_n*/2; ++i) {
 		if(theLights[i].position.w == 0.0) {
 		  	//direction light
 			//Vector de la luz invertido.

@@ -213,7 +213,7 @@ Trfm3D* RenderState::getLightC(){
 }
 
 float *RenderState::getLightMatrix(){
-	float * glmatrix = new float[16];
+	float *glmatrix = new float [16];
 	this->lightC->getGLMatrix(glmatrix);
 	return glmatrix;
 }

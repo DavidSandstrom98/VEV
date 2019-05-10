@@ -25,7 +25,7 @@ void main() {
 	f_normal = vec3( modelToCameraMatrix * vec4(v_normal, 0.0) );
 	f_texCoord = v_texCoord;
 	f_viewDirection = vec3( (0.0, 0.0, 0.0, 1.0) - f_position );
-    L_position = modelToWorldMatrix * worldToShadowCameraClip * f_position;
+    L_position =  (worldToShadowCameraClip * modelToWorldMatrix * vec4(f_position, 1.0)).xyz;
 
 	gl_Position = modelToClipMatrix * vec4(v_position, 1.0);
 }

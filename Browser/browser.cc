@@ -154,6 +154,15 @@ static void InitShadowCamera(int Width, int Height) {
 				Vector3(0.0f, 149.0f, -100.0f),  // look-at
 				Vector3(-1.0f, 0.0f, -1.0f));  // up vector
 	cam->init(30.0f * Constants::degree_to_rad, (float)Width / (float) Height, 100.0f, 1000.0f);
+	RenderState *rs = RenderState::instance();
+
+	//METER LA TRANSFORMACION DE LA CAMARA DEL OBJETO
+	Trfm3D *clonado = new Trfm3D();
+	clonado->clone(cam->projectionTrfm());
+	clonado->add(cam->viewTrfm());
+	rs->setlightC(clonado);
+	//TextureManager
+
 }
 
 static void InitAvatar() {
@@ -253,9 +262,20 @@ static void Display() {
 	glutSwapBuffers();
 }
 
+
+static void createShadowMap(){
+	TextureManager *tm = TextureManager::instance();
+	RenderState *rs = RenderState::instance();
+	rs->setSombras(tm->createDepthMap("shadow",2048, 2048));
+}
+
 static void DisplaySahdow(){
 	Camera *theCamera;
 	theCamera = CameraManager::instance()->find("shadowCamera");
+	
+	Node *nodo = NodeManager::instance()->find("root");
+    nodo->attachShader(ShaderManager::instance()->find("perfragment"));
+
 	if (theCamera){
 		Scene::instance()->rootNode()->frustumCull(theCamera);
 		RenderState *rs =  RenderState::instance();
@@ -263,11 +283,15 @@ static void DisplaySahdow(){
 		tex->bind();
 		Render(theCamera);
 		tex->unbind();
-	}  // no shadow camera camera
+		TextureRT *rtex = rs->getSombras();
+		Material *mat = MaterialManager::instance()->find("./obj/cubes/cubotex.mtl","TEX" );
+		if(mat)
+			mat->setTexture(rtex); 
+	}  // no shadow camera camera*/
 
 	
 
-
+	nodo->attachShader(ShaderManager::instance()->find("Shadow"));
 	theCamera = CameraManager::instance()->find("mainCamera");
 	if (!theCamera) return; // no main camera
 
@@ -276,6 +300,8 @@ static void DisplaySahdow(){
 	Render(theCamera);
 	glutSwapBuffers();
 }
+
+
 
 // Keyboard dispatcher when ALT key is pressed
 static void Keyboard_alt(unsigned char key) {
@@ -569,14 +595,15 @@ int main(int argc, char** argv) {
 	//InitRenderContext(argc, argv, 900, 700, 100, 0);
 	InitRenderContext(argc, argv, 1800, 1400, 100, 0);
 	// set GLUT callback functions
-	glutDisplayFunc( Display );
+	//glutDisplayFunc( Display );
+	glutDisplayFunc( DisplaySahdow );
 	glutKeyboardFunc( Keyboard );
 	glutSpecialFunc( SpecialKey );
 	glutReshapeFunc( Resize );
 	glutMouseFunc( mouseClick );
 	glutMotionFunc( mouse );
 	//glutIdleFunc( idle );
-
+	createShadowMap();
 	if (argc == 2) {
 		// load scene from JSON scene
 		displayNode = parse_scene(argv[1]);
@@ -589,10 +616,10 @@ int main(int argc, char** argv) {
 		InitLight();
 		InitShaders();
 		// Change the line below for different scenes
-		//displayNode = create_scene();
+		displayNode = create_scene();
 		// Other possible scenes:
 		//
-		displayNode = create_scene_city();
+		//displayNode = create_scene_city();
 	}
 
 	Scene::instance()->attach(displayNode);

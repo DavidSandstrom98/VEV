@@ -54,7 +54,7 @@ void ShaderProgram::initUniforms() {
 	
 	m_modelToShadow = GetProgramUniform(name, m_program, "worldToShadowCameraClip");
 	m_shadowmap = GetProgramUniform(name, m_program, "shadowMap");
-
+	
 }
 
 ShaderProgram::~ShaderProgram() {}
@@ -123,7 +123,6 @@ void ShaderProgram::beforeDraw() {
 		shader_set_uniform_1i(m_shadowmap, Constants::gl_texunits::shadow); 
 	}
 	/////////////////////////////////////////////////////////////////////////
-
 
 	shader_set_uniform_matrix4(m_umodeltoCamera, rs->getGLMatrix(RenderState::modelview));
 	shader_set_uniform_matrix4(m_umodeltoWorld, rs->getGLMatrix(RenderState::model));
