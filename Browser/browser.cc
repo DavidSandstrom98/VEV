@@ -157,6 +157,7 @@ static void InitShadowCamera(int Width, int Height) {
 	RenderState *rs = RenderState::instance();
 
 	//METER LA TRANSFORMACION DE LA CAMARA DEL OBJETO
+	
 	Trfm3D *clonado = new Trfm3D();
 	clonado->clone(cam->projectionTrfm());
 	clonado->add(cam->viewTrfm());
@@ -263,10 +264,11 @@ static void Display() {
 }
 
 
-static void createShadowMap(){
+static TextureRT* createShadowMap(){
 	TextureManager *tm = TextureManager::instance();
 	RenderState *rs = RenderState::instance();
 	rs->setSombras(tm->createDepthMap("shadow",2048, 2048));
+	return rs->getSombras();
 }
 
 static void DisplaySahdow(){
@@ -280,6 +282,11 @@ static void DisplaySahdow(){
 		Scene::instance()->rootNode()->frustumCull(theCamera);
 		RenderState *rs =  RenderState::instance();
 		TextureRT *tex = rs->getSombras();
+		if(tex == 0){
+			tex = createShadowMap();
+		}else{
+			//tex = new TextureRT(Texture::rt_depth, 2048, 2048);
+		}
 		tex->bind();
 		Render(theCamera);
 		tex->unbind();
@@ -603,7 +610,7 @@ int main(int argc, char** argv) {
 	glutMouseFunc( mouseClick );
 	glutMotionFunc( mouse );
 	//glutIdleFunc( idle );
-	createShadowMap();
+	
 	if (argc == 2) {
 		// load scene from JSON scene
 		displayNode = parse_scene(argv[1]);

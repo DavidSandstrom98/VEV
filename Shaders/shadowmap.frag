@@ -29,6 +29,7 @@ varying vec3 f_position;      // camera space
 varying vec3 f_viewDirection; // camera space del pixel a la camara
 varying vec3 f_normal;        // camera space la normal en el pixel
 varying vec2 f_texCoord;	//Coordenada de textura en el pixel
+varying vec4 L_position;
 
 float lambert_factor(const vec3 n, const vec3 l) {//Si es 0 no hay componente especular
 	float fac = dot(n,l);//producto escalar entre la normal del vertice y la direccion de la luz
@@ -68,13 +69,16 @@ void direction_light(const in int i,
     //Calcular aportacion difusa de la luz al vertice y sumarlo a diffuse
 	float lam = lambert_factor(normal, lightDirection);
 	//Solo si hay aportacion difusa puede haber luz difusa y especular
+
 	if(lam > 0.0){
+
 		diffuse += lam * theMaterial.diffuse * theLights[i].diffuse;
 
 		float especular = specular_factor(normal, lightDirection, viewDirection, theMaterial.shininess);
 		if(especular > 0.0){
-			specular += especular * theMaterial.specular * theLights[i].specular;
+			specular +=  especular * theMaterial.specular * theLights[i].specular;
 		}
+		
 	}
 
 }
@@ -159,7 +163,7 @@ void main() {
 
 	vec3 lightDirection;
 
-	for(int i=0; i < /*active_lights_n*/2; ++i) {
+	for(int i=0; i < /*active_lights_n*/1; ++i) {
 		if(theLights[i].position.w == 0.0) {
 		  	//direction light
 			//Vector de la luz invertido.
@@ -171,10 +175,10 @@ void main() {
 		} else {
 		  	if (theLights[i].cosCutOff == 0.0) {
 				// point light luz posicional
-				point_light(i, positionEye.xyz, viewDirection, normal, diffuse, specular);
+				//point_light(i, positionEye.xyz, viewDirection, normal, diffuse, specular);
 		  	} else {
 				// spot light foco
-				spot_light(i, positionEye.xyz, viewDirection, normal, diffuse, specular);
+				//spot_light(i, positionEye.xyz, viewDirection, normal, diffuse, specular);
 		 	}
 		}
 	}
@@ -184,5 +188,17 @@ void main() {
 	f_color.a = 1.0;
 
 	vec4 f_texColor = texture2D(texture0, f_texCoord);
+		
+	float sombra = 1.0;
+	vec4 shadowCoordinate = L_position / L_position.a;
+	shadowCoordinate.z += 0.0005;
+	float distanceFromLight = texture2D(shadowMap, shadowCoordinate.xy).z;
+
+	if (L_position.w > 0.0)
+	 	sombra = distanceFromLight < shadowCoordinate.z ? 0.5 : 1.0 ;
+
+	f_color.xyz = sombra * f_color.xyz;
+
 	gl_FragColor = f_color * f_texColor;
+	
 }

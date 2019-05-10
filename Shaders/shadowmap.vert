@@ -16,7 +16,7 @@ varying vec3 f_position;
 varying vec3 f_viewDirection;
 varying vec3 f_normal;
 varying vec2 f_texCoord;
-varying vec3 L_position;
+varying vec4 L_position;
 
 void main() {
 	//En este caso no hay que normalizar la normal.
@@ -25,7 +25,16 @@ void main() {
 	f_normal = vec3( modelToCameraMatrix * vec4(v_normal, 0.0) );
 	f_texCoord = v_texCoord;
 	f_viewDirection = vec3( (0.0, 0.0, 0.0, 1.0) - f_position );
-    L_position =  (worldToShadowCameraClip * modelToWorldMatrix * vec4(f_position, 1.0)).xyz;
+
+	mat4 bias = mat4(
+		0.5, 0.0, 0.0, 0.0, 
+		0.0, 0.5, 0.0, 0.0,
+		0.0, 0.0, 0.5, 0.0,
+		0.5, 0.5, 0.5, 1.0
+	);
+	
+	
+    L_position = bias * worldToShadowCameraClip * vec4(f_position, 1.0);
 
 	gl_Position = modelToClipMatrix * vec4(v_position, 1.0);
 }
