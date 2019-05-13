@@ -190,9 +190,14 @@ void main() {
 	vec4 f_texColor = texture2D(texture0, f_texCoord);
 		
 	float sombra = 1.0;
+	//Pasarlo al NDC
 	vec3 shadowCoordinate = L_position.xyz / L_position.w;
+	//Pasarlo del sistema [-1, 1] al [0, 1]
 	shadowCoordinate = shadowCoordinate * 0.5 + 0.5;
-	//shadowCoordinate.z += 0.0005;
+	//Reducir problemas con las sombras
+	float bias = 0.002*tan(acos(dot(normal, lightDirection))); 
+	bias = clamp(bias, 0,0.01);
+	shadowCoordinate.z -= bias;
 	float distanceFromLight = texture2D(shadowMap, shadowCoordinate.xy).z;
 
 	if (L_position.w > 0.0)

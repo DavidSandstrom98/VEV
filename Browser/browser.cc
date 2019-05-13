@@ -227,7 +227,7 @@ static void Resize(int Width, int Height) {
 
 
 //No hay que modificarlo para las sombras
-static void Render(Camera *theCamera, int render) {
+static void Render(Camera *theCamera) {
 
 	RenderState *rs = RenderState::instance();
 	LightManager *lmgr = LightManager::instance();
@@ -258,7 +258,7 @@ static void Display() {
 
 	Scene::instance()->rootNode()->frustumCull(theCamera); // Frustum Culling
 
-	Render(theCamera, 1);
+	Render(theCamera);
 	glutSwapBuffers();
 }
 
@@ -266,7 +266,7 @@ static void Display() {
 static TextureRT* createShadowMap(){
 	TextureManager *tm = TextureManager::instance();
 	RenderState *rs = RenderState::instance();
-	rs->setSombras(tm->createDepthMap("shadow",2048, 2048));
+	rs->setSombras(tm->createDepthMap("shadow",4096 , 4096));
 	return rs->getSombras();
 }
 
@@ -284,8 +284,9 @@ static void DisplaySahdow(){
 		if(tex == 0){
 			tex = createShadowMap();
 		}
+		glCullFace(GL_FRONT);
 		tex->bind();
-		Render(theCamera, 1);
+		Render(theCamera);
 		tex->unbind();
 		TextureRT *rtex = rs->getSombras();
 		Material *mat = MaterialManager::instance()->find("./obj/cubes/cubotex.mtl","TEX" );
@@ -300,8 +301,8 @@ static void DisplaySahdow(){
 	if (!theCamera) return; // no main camera
 
 	Scene::instance()->rootNode()->frustumCull(theCamera); // Frustum Culling
-
-	Render(theCamera, 2);
+	glCullFace(GL_BACK);
+	Render(theCamera);
 	glutSwapBuffers();
 }
 
