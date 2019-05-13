@@ -190,8 +190,9 @@ void main() {
 	vec4 f_texColor = texture2D(texture0, f_texCoord);
 		
 	float sombra = 1.0;
-	vec4 shadowCoordinate = L_position / L_position.a;
-	shadowCoordinate.z += 0.0005;
+	vec3 shadowCoordinate = L_position.xyz / L_position.w;
+	shadowCoordinate = shadowCoordinate * 0.5 + 0.5;
+	//shadowCoordinate.z += 0.0005;
 	float distanceFromLight = texture2D(shadowMap, shadowCoordinate.xy).z;
 
 	if (L_position.w > 0.0)

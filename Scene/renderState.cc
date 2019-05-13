@@ -42,6 +42,9 @@ TrfmStack *RenderState::chooseStack(stack_t matrixMode) {
 	case modelview_projection:
 		res = &m_modelViewProjectionStack;
 		break;
+	case shadow:
+		res = &m_shadowStack;
+		break;
 	default:
 		fprintf(stderr, "[E] RenderState::chooseStack: invalid matrix mode %d\n", matrixMode);
 		exit(1);
@@ -202,18 +205,4 @@ void RenderState::setSombras(TextureRT* sombras){
 	
 TextureRT* RenderState::getSombras(){
 	return this->mapaSombras;
-}
-
-void RenderState::setlightC(Trfm3D* camara){
-	this->lightC = camara;
-}
-
-Trfm3D* RenderState::getLightC(){
-	return this->lightC;
-}
-
-float *RenderState::getLightMatrix(){
-	float *glmatrix = new float [16];
-	this->lightC->getGLMatrix(glmatrix);
-	return glmatrix;
 }

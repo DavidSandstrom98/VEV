@@ -113,9 +113,11 @@ void ShaderProgram::beforeDraw() {
 	Material *mat;
 	Texture *tex;
 	RenderState *rs = RenderState::instance();
+
+	//rs->loadTrfm(RenderState::shadow, rs->getLightC());
 	
 	//////////////////////////////////////////////////////////////////////////Sombras
-	shader_set_uniform_matrix4(m_modelToShadow, rs->getLightMatrix());
+	shader_set_uniform_matrix4(m_modelToShadow, rs->getGLMatrix(RenderState::shadow));
 	TextureRT *tr = rs->getSombras();
 	if (tr != 0) {
 		// shadowmap in texture unit 2

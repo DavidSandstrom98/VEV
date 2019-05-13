@@ -157,12 +157,8 @@ static void InitShadowCamera(int Width, int Height) {
 	RenderState *rs = RenderState::instance();
 
 	//METER LA TRANSFORMACION DE LA CAMARA DEL OBJETO
-	
-	Trfm3D *clonado = new Trfm3D();
-	clonado->clone(cam->projectionTrfm());
-	clonado->add(cam->viewTrfm());
-	rs->setlightC(clonado);
-	//TextureManager
+	rs->loadTrfm(RenderState::shadow, cam->projectionTrfm());
+	rs->addTrfm(RenderState::shadow, cam->viewTrfm());
 
 }
 
@@ -228,8 +224,10 @@ static void Resize(int Width, int Height) {
 	Shadow->onResize(Width, Height);
 	glViewport(0, 0, (GLsizei) Width, (GLsizei) Height); // TODO should go to context
 }
+
+
 //No hay que modificarlo para las sombras
-static void Render(Camera *theCamera) {
+static void Render(Camera *theCamera, int render) {
 
 	RenderState *rs = RenderState::instance();
 	LightManager *lmgr = LightManager::instance();
@@ -248,6 +246,7 @@ static void Render(Camera *theCamera) {
 		it->placeScene();
 	}
 
+
 	Scene::instance()->draw();
 }
 
@@ -259,7 +258,7 @@ static void Display() {
 
 	Scene::instance()->rootNode()->frustumCull(theCamera); // Frustum Culling
 
-	Render(theCamera);
+	Render(theCamera, 1);
 	glutSwapBuffers();
 }
 
@@ -284,11 +283,9 @@ static void DisplaySahdow(){
 		TextureRT *tex = rs->getSombras();
 		if(tex == 0){
 			tex = createShadowMap();
-		}else{
-			//tex = new TextureRT(Texture::rt_depth, 2048, 2048);
 		}
 		tex->bind();
-		Render(theCamera);
+		Render(theCamera, 1);
 		tex->unbind();
 		TextureRT *rtex = rs->getSombras();
 		Material *mat = MaterialManager::instance()->find("./obj/cubes/cubotex.mtl","TEX" );
@@ -304,7 +301,7 @@ static void DisplaySahdow(){
 
 	Scene::instance()->rootNode()->frustumCull(theCamera); // Frustum Culling
 
-	Render(theCamera);
+	Render(theCamera, 2);
 	glutSwapBuffers();
 }
 

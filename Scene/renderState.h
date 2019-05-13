@@ -36,7 +36,8 @@ public:
 		model,
 		projection,
 		texture,
-		modelview_projection
+		modelview_projection,
+		shadow
 	};
 
 	///////////////////////////////////////////
@@ -196,11 +197,6 @@ public:
 	void setSombras(TextureRT* sombras);
 	TextureRT* getSombras();
 
-	void setlightC(Trfm3D* camara);
-	Trfm3D *getLightC();
-
-	float *getLightMatrix();
-
 private:
 	RenderState();
 	~RenderState();
@@ -216,7 +212,7 @@ private:
 	TrfmStack m_projectionStack;          // clip space to NDC space
 	TrfmStack m_textureStack;             // tex. coordinates: object space to texture space
 	TrfmStack m_modelViewProjectionStack; // model space to NDC space
-
+	TrfmStack m_shadowStack;
 	// Lights
 
 	std::list<Light *> m_lights;
@@ -238,5 +234,5 @@ private:
 
 	//Sombras
 	TextureRT *mapaSombras;
-	Trfm3D *lightC;
+
 };

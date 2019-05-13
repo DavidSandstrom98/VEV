@@ -104,6 +104,8 @@ void Light::placeScene()
 		this->m_spotDirectionEye = modelviu->transformVector(this->m_spotDirection);
 		this->m_spotDirectionEye.normalize();
 	}
+
+	
 }
 
 void Light::setSpotData(const Vector3 & direction,
