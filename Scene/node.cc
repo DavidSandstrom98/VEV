@@ -405,7 +405,7 @@ void Node::updateGS() {
 //    See Recipe 1 in for knowing how to iterate through children.
 
 void Node::draw() {
-	if(this == 0) return;
+	//if(this == 0) return;
 	
 	ShaderProgram *prev_shader = 0;
 	RenderState *rs = RenderState::instance();
@@ -425,6 +425,7 @@ void Node::draw() {
 	if(this->m_gObject != 0){
 		rs->push(RenderState::modelview);
 		rs->addTrfm(RenderState::modelview, this->m_placementWC);
+		rs->loadTrfm(RenderState::model, m_placementWC);
 		this->m_gObject->draw();
 		rs->pop(RenderState::modelview);
 	}else{
@@ -432,6 +433,9 @@ void Node::draw() {
 			Node *theChild = *it;
 			theChild->draw();
 		}	
+	}
+	if (prev_shader != 0) {
+		rs->setShader(prev_shader);
 	}
 	/*Version en modo local
 	rs->push(RenderState::modelview);
