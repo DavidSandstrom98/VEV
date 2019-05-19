@@ -59,7 +59,7 @@ void main() {
 		else//luz direccional
 			f_lightDirection[i] = TangentMatrix * (-theLights[i].position.xyz);
 		
-		//if(theLights[i].cosCutOff > 0.0)//Solo para las linternas
+		if(theLights[i].cosCutOff > 0.0)//Solo para las linternas
 			f_spotDirection[i] = TangentMatrix * theLights[i].spotDir;
 		
 	}

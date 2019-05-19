@@ -338,7 +338,9 @@ int Camera::checkFrustum(const BBox *theBBox,
 		if(resul == IINTERSECT)
 		{
 			intersecta = 0; //Caso en que el BBox se encuentra a medias
-		}else if(resul == +IREJECT){
+		}
+		else if(resul == +IREJECT)
+		{
 			return 1;//Totalmente fuera del frustum			
 		}
 

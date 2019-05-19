@@ -182,7 +182,7 @@ void main() {
 		 	}
 		}
 	}
-
+	//Calcular la luz acumulada
 	vec4 f_color;
 	f_color.rgb = scene_ambient + diffuse + specular;
 	f_color.a = 1.0;
@@ -195,8 +195,11 @@ void main() {
 	//Pasarlo del sistema [-1, 1] al [0, 1]
 	shadowCoordinate = shadowCoordinate * 0.5 + 0.5;
 	//Reducir problemas con las sombras
-	float bias = 0.002*tan(acos(dot(normal, lightDirection))); 
-	bias = clamp(bias, 0,0.01);
+	//He tenido que reducir el valor del factor para reducir el "Peter-panning"
+	//Es decir, que la sombra se separa del propio objeto.
+	float bias = 0.0025 * tan( acos( dot( normal, lightDirection ))); 
+	//Restring el valor de bias al intervalo [0, 0.01]
+	bias = clamp(bias, 0, 0.01);
 	shadowCoordinate.z -= bias;
 	float distanceFromLight = texture2D(shadowMap, shadowCoordinate.xy).z;
 

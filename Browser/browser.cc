@@ -217,12 +217,6 @@ static void Resize(int Width, int Height) {
 	theCamera->onResize(Width, Height);
 	glViewport(0, 0, (GLsizei) Width, (GLsizei) Height); // TODO should go to context
 	
-	Camera *Shadow = CameraManager::instance()->find("shadowCamera");
-	if (!Shadow) return; // no main camera
-	if (Height==0)				// Prevent A Divide By Zero If The Window Is Too Small
-		Height=1;
-	Shadow->onResize(Width, Height);
-	glViewport(0, 0, (GLsizei) Width, (GLsizei) Height); // TODO should go to context
 }
 
 
@@ -278,16 +272,19 @@ static void DisplaySahdow(){
     nodo->attachShader(ShaderManager::instance()->find("perfragment"));
 
 	if (theCamera){
+		glCullFace(GL_FRONT);
 		Scene::instance()->rootNode()->frustumCull(theCamera);
 		RenderState *rs =  RenderState::instance();
 		TextureRT *tex = rs->getSombras();
 		if(tex == 0){
 			tex = createShadowMap();
 		}
-		glCullFace(GL_FRONT);
+		
 		tex->bind();
 		Render(theCamera);
 		tex->unbind();
+
+		//Colocar el mapa de sombras como textura del cubo
 		TextureRT *rtex = rs->getSombras();
 		Material *mat = MaterialManager::instance()->find("./obj/cubes/cubotex.mtl","TEX" );
 		if(mat)
@@ -295,13 +292,13 @@ static void DisplaySahdow(){
 	}  // no shadow camera camera*/
 
 	
-
+	glCullFace(GL_BACK);
 	nodo->attachShader(ShaderManager::instance()->find("Shadow"));
 	theCamera = CameraManager::instance()->find("mainCamera");
 	if (!theCamera) return; // no main camera
 
 	Scene::instance()->rootNode()->frustumCull(theCamera); // Frustum Culling
-	glCullFace(GL_BACK);
+	
 	Render(theCamera);
 	glutSwapBuffers();
 }
@@ -600,8 +597,8 @@ int main(int argc, char** argv) {
 	//InitRenderContext(argc, argv, 900, 700, 100, 0);
 	InitRenderContext(argc, argv, 1800, 1400, 100, 0);
 	// set GLUT callback functions
-	//glutDisplayFunc( Display );
-	glutDisplayFunc( DisplaySahdow );
+	glutDisplayFunc( Display );
+	//glutDisplayFunc( DisplaySahdow );
 	glutKeyboardFunc( Keyboard );
 	glutSpecialFunc( SpecialKey );
 	glutReshapeFunc( Resize );
@@ -621,10 +618,10 @@ int main(int argc, char** argv) {
 		InitLight();
 		InitShaders();
 		// Change the line below for different scenes
-		displayNode = create_scene();
+		//displayNode = create_scene();
 		// Other possible scenes:
 		//
-		//displayNode = create_scene_city();
+		displayNode = create_scene_city();
 	}
 
 	Scene::instance()->attach(displayNode);
