@@ -434,9 +434,11 @@ void Node::draw() {
 			theChild->draw();
 		}	
 	}
+
 	if (prev_shader != 0) {
 		rs->setShader(prev_shader);
 	}
+	
 	/*Version en modo local
 	rs->push(RenderState::modelview);
 	rs->addTrfm(RenderState::modelview, this->m_placement);
@@ -473,13 +475,16 @@ void Node::frustumCull(Camera *cam)
 	switch (colision)
 	{
 	case 1: //Se encuentra totalmente fuera
+			//Podamos tanto el nodo en cuestion como sus hijos
 		this->setCulled(true);
 		break;
 	case -1: //Se encuentra totalmente dentro
+			 //Marcamos para que se renderice tanto el nodo como sus hijos
 		this->setCulled(false);
 		break;
 
 	default: //Se encuentra a medias
+			 //Marcar el nodo para que se pinte pero tenemos que comprobar sus hijos
 		this->m_isCulled = false;
 		for (list<Node *>::iterator it = m_children.begin(), end = m_children.end(); it != end; ++it)
 		{

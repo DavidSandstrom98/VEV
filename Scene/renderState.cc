@@ -42,9 +42,11 @@ TrfmStack *RenderState::chooseStack(stack_t matrixMode) {
 	case modelview_projection:
 		res = &m_modelViewProjectionStack;
 		break;
+	//////////////////////////////////////////////////////////////////////////
 	case shadow:
 		res = &m_shadowStack;
 		break;
+	//////////////////////////////////////////////////////////////////////////
 	default:
 		fprintf(stderr, "[E] RenderState::chooseStack: invalid matrix mode %d\n", matrixMode);
 		exit(1);

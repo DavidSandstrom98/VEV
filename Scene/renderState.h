@@ -37,7 +37,7 @@ public:
 		projection,
 		texture,
 		modelview_projection,
-		shadow
+		shadow //matriz incluida para el calculo de las sombras
 	};
 
 	///////////////////////////////////////////
@@ -212,7 +212,7 @@ private:
 	TrfmStack m_projectionStack;          // clip space to NDC space
 	TrfmStack m_textureStack;             // tex. coordinates: object space to texture space
 	TrfmStack m_modelViewProjectionStack; // model space to NDC space
-	TrfmStack m_shadowStack;
+	TrfmStack m_shadowStack;			  // world to shadow camera
 	// Lights
 
 	std::list<Light *> m_lights;

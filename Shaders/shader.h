@@ -77,11 +77,10 @@ private:
 	GLint m_ubumpSampler;
 	GLint m_utexCubemap;
 
-
 	GLint m_utime;
 
 	//Sombras
-	GLint m_modelToShadow;
-	GLint m_shadowmap;
+	GLint m_modelToShadow;//Matriz
+	GLint m_shadowmap;//Textura
 
 };

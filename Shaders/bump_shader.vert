@@ -45,11 +45,11 @@ void main() {
 	vec3 cameraNormal = MV3x3 * v_normal;
 	vec3 cameraPosition = (modelToCameraMatrix * vec4(v_position, 1.0)).xyz;
 
-	//Por defecto se crea por columnas
+	//Por defecto se crea por columnas por lo que es necesario transponerla
 	//leido por filas normal, tangente y bitangente.
 	mat3 TangentMatrix = transpose(mat3(cameraTangent, cameraBiTangent, cameraNormal));
 	
-	//Vector de la camara al punto
+	//Vector del punto a la camara
 	f_viewDirection = TangentMatrix * (-cameraPosition);
 
 	for (int i = 0; i < 4; i++)

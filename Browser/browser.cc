@@ -215,8 +215,7 @@ static void Resize(int Width, int Height) {
 	if (Height==0)				// Prevent A Divide By Zero If The Window Is Too Small
 		Height=1;
 	theCamera->onResize(Width, Height);
-	glViewport(0, 0, (GLsizei) Width, (GLsizei) Height); // TODO should go to context
-	
+	glViewport(0, 0, (GLsizei) Width, (GLsizei) Height); // TODO should go to context	
 }
 
 
@@ -260,19 +259,19 @@ static void Display() {
 static TextureRT* createShadowMap(){
 	TextureManager *tm = TextureManager::instance();
 	RenderState *rs = RenderState::instance();
-	rs->setSombras(tm->createDepthMap("shadow",4096 , 4096));
+	rs->setSombras(tm->createDepthMap("shadow", 2048 , 2048));
 	return rs->getSombras();
 }
 
 static void DisplaySahdow(){
 	Camera *theCamera;
 	theCamera = CameraManager::instance()->find("shadowCamera");
-	
+	//Shader a usar para calcular el mapa de sombras
 	Node *nodo = NodeManager::instance()->find("root");
     nodo->attachShader(ShaderManager::instance()->find("perfragment"));
 
 	if (theCamera){
-		glCullFace(GL_FRONT);
+		glCullFace(GL_FRONT);//Cambiar el culling para reducir problemas al ver las sombras
 		Scene::instance()->rootNode()->frustumCull(theCamera);
 		RenderState *rs =  RenderState::instance();
 		TextureRT *tex = rs->getSombras();
@@ -292,7 +291,7 @@ static void DisplaySahdow(){
 	}  // no shadow camera camera*/
 
 	
-	glCullFace(GL_BACK);
+	glCullFace(GL_BACK);//Volver al formato de back face culling de la renderizacion normal
 	nodo->attachShader(ShaderManager::instance()->find("Shadow"));
 	theCamera = CameraManager::instance()->find("mainCamera");
 	if (!theCamera) return; // no main camera
@@ -597,8 +596,8 @@ int main(int argc, char** argv) {
 	//InitRenderContext(argc, argv, 900, 700, 100, 0);
 	InitRenderContext(argc, argv, 1800, 1400, 100, 0);
 	// set GLUT callback functions
-	glutDisplayFunc( Display );
-	//glutDisplayFunc( DisplaySahdow );
+	//glutDisplayFunc( Display );
+	glutDisplayFunc( DisplaySahdow );
 	glutKeyboardFunc( Keyboard );
 	glutSpecialFunc( SpecialKey );
 	glutReshapeFunc( Resize );
@@ -618,10 +617,10 @@ int main(int argc, char** argv) {
 		InitLight();
 		InitShaders();
 		// Change the line below for different scenes
-		//displayNode = create_scene();
+		displayNode = create_scene();
 		// Other possible scenes:
 		//
-		displayNode = create_scene_city();
+		//displayNode = create_scene_city();
 	}
 
 	Scene::instance()->attach(displayNode);

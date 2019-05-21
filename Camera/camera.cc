@@ -327,11 +327,17 @@ void  Camera::arcLeftRight(float angle) {
 	m_Up = T.transformVector(m_Up);
 	updateFrame();
 }
-
+/**
+ * Retorna: -1 en caso de que el objeto este completamente dentro del frustum
+ * 			 0 en caso de que se encuentre intersectando alguno de los 6 planos
+ * 			 1 en caso de que se encuentre fuera del frustum
+ **/
 int Camera::checkFrustum(const BBox *theBBox,
 						 unsigned int *planesBitM) {
+	
 	int resul;
-	int intersecta = -1;
+	int intersecta = -1;//"Suponemos" que el objeto esta completamente dentro del frustum. De no estarlo este valor se modificara
+	
 	for(int i = 0; i < 6; i++)
 	{
 		resul = BBoxPlaneIntersect(theBBox, this->m_fPlanes[i]);
@@ -341,12 +347,12 @@ int Camera::checkFrustum(const BBox *theBBox,
 		}
 		else if(resul == +IREJECT)
 		{
-			return 1;//Totalmente fuera del frustum			
+			return 1; //Totalmente fuera del frustum			
 		}
-
 	}
+
 	//*planesBitM = 2;//Cantidad de planos con los que intersecta. No es necesario
-	return intersecta; // BBox is fully inside the frustum
+	return intersecta; 
 }
 
 /////////////////////////////////////////////////////////////////////////////////////

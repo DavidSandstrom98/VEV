@@ -113,14 +113,13 @@ void ShaderProgram::beforeDraw() {
 	Material *mat;
 	Texture *tex;
 	RenderState *rs = RenderState::instance();
-
-	//rs->loadTrfm(RenderState::shadow, rs->getLightC());
 	
 	//////////////////////////////////////////////////////////////////////////Sombras
+	//Valor de la matriz
 	shader_set_uniform_matrix4(m_modelToShadow, rs->getGLMatrix(RenderState::shadow));
+	//Valor para el mapa de sombras
 	TextureRT *tr = rs->getSombras();
 	if (tr != 0) {
-		// shadowmap in texture unit 2
 		tr->bindGLUnit(Constants::gl_texunits::shadow);
 		shader_set_uniform_1i(m_shadowmap, Constants::gl_texunits::shadow); 
 	}

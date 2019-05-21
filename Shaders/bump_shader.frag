@@ -68,6 +68,7 @@ void direction_light(const in int i,
 					 const in vec3 viewDirection,
 					 const in vec3 normal,
 					 inout vec3 diffuse, inout vec3 specular) {
+
 	//Calcular aportacion difusa de la luz al vertice y sumarlo a diffuse
 	float lam = lambert_factor(normal, lightDirection);
 	//Solo si hay aportacion difusa puede haber luz difusa y especular
@@ -79,6 +80,7 @@ void direction_light(const in int i,
 			specular += especular * theMaterial.specular * theLights[i].specular;
 		}
 	}
+
 }
 
 // Note: do not calculate the attenuation in point_lights
@@ -87,14 +89,14 @@ void direction_light(const in int i,
 //    tangent space, instead of 'position' (as used in pervertex and
 //    perfragment)
 
-//CUIDADO tiene un parametro menos porque no usa la posicion
+//CUIDADO tiene un parametro menos porque no usa la posicion para calcular la distancia
+//No se aplica atenuacion a la luz.
 void point_light(const in int i,
 				 const in vec3 viewDirection,
 				 const in vec3 normal,
 				 inout vec3 diffuse, inout vec3 specular) {
 
-	//Vector que va de la luz al vertice
-	//vec3 L = theLights[i].position.xyz - position;
+	//Vector que va de la posicion del vertice a la luz
 	vec3 L = normalize(f_lightDirection[i]);
 
 	float lam = lambert_factor(normal, L);
@@ -110,7 +112,7 @@ void point_light(const in int i,
 }
 
 // Note: no attenuation in spotlights
-
+// Solo se ha calculado la atenuacion con respecto al angulo y no a la distancia.
 void spot_light(const in int i,
 				const in vec3 viewDirection,
 				const in vec3 normal,

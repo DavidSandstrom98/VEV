@@ -198,16 +198,17 @@ void main() {
 	//He tenido que reducir el valor del factor para reducir el "Peter-panning"
 	//Es decir, que la sombra se separa del propio objeto.
 	float bias = 0.0025 * tan( acos( dot( normal, lightDirection ))); 
-	//Restring el valor de bias al intervalo [0, 0.01]
+	//Restringe el valor de bias al intervalo [0, 0.01]
 	bias = clamp(bias, 0, 0.01);
 	shadowCoordinate.z -= bias;
 	float distanceFromLight = texture2D(shadowMap, shadowCoordinate.xy).z;
 
+	//Si se cumple la segunda condicion actualizamos el valor del factor para la sombra a 0.5
+	//en caso contrario se mantiene a 1
 	if (L_position.w > 0.0)
 	 	sombra = distanceFromLight < shadowCoordinate.z ? 0.5 : 1.0 ;
 
 	f_color.xyz = sombra * f_color.xyz;
 
 	gl_FragColor = f_color * f_texColor;
-	
 }
