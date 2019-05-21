@@ -156,7 +156,7 @@ static void InitShadowCamera(int Width, int Height) {
 	cam->init(30.0f * Constants::degree_to_rad, (float)Width / (float) Height, 100.0f, 1000.0f);
 	RenderState *rs = RenderState::instance();
 
-	//METER LA TRANSFORMACION DE LA CAMARA DEL OBJETO
+	//Almacenar el valor de la matriz en el render state
 	rs->loadTrfm(RenderState::shadow, cam->projectionTrfm());
 	rs->addTrfm(RenderState::shadow, cam->viewTrfm());
 
